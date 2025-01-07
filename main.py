@@ -1,12 +1,14 @@
 import hydra
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 from client import generate_client_fn
 from PanNuke import load_data, getMeansAndStds
-from Models import Unet_model, CombinedLoss, MeanIoU
+from Models import  MeanIoU
 import torch
 import flwr as fl
 from server import get_on_fit_config, get_evaluate_fn
 import segmentation_models_pytorch.losses as losses
+from hydra.utils import instantiate
+
 
 @hydra.main(config_path="conf", config_name="base", version_base=None)
 def main(cfg: DictConfig):
@@ -45,7 +47,8 @@ def main(cfg: DictConfig):
     save_dir = cfg.save_dir
 
     # 3.2 Models
-    model = Unet_model
+    model = instantiate(cfg.model)
+
     criterion = losses.DiceLoss(
         mode="multilabel",  # Since y_true is one-hot encoded
         from_logits=True,   # Your model outputs raw logits
@@ -53,6 +56,7 @@ def main(cfg: DictConfig):
         ignore_index=None,  # Use None if no pixels should be ignored
         log_loss=False      # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
     )
+    
     metric = MeanIoU()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)

@@ -30,13 +30,13 @@ encoders = {
 
 
 
-Unet_model = smp.Unet(
-    encoder_name="mit_b0",
-    encoder_weights="imagenet",
-    in_channels=3,
-    classes=6,
-    activation='softmax2d' # None for logits & 'softmax2d' for multiclass segmentation
-)
+# Unet_model = smp.Unet(
+#     encoder_name="mit_b0",
+#     encoder_weights="imagenet",
+#     in_channels=3,
+#     classes=6,
+#     activation='softmax2d' # None for logits & 'softmax2d' for multiclass segmentation
+# )
 
 
 DeepLabV3Plus_model = smp.DeepLabV3Plus(

@@ -1,0 +1,6 @@
+_target_: segmentation_models_pytorch.Unet  # Model class
+encoder_name: ${unet.encoder_name}          # Name of the encoder
+encoder_weights: ${unet.encoder_weights}    # Pre-trained weights
+in_channels: 3                              # Number of input channels
+classes: 6                                  # Number of classes
+activation: softmax2d                       # Activation function (use None for logits)

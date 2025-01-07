@@ -1,0 +1,21 @@
+[2025-01-07 23:17:28,771][flwr][INFO] - Starting Flower simulation, config: ServerConfig(num_rounds=1, round_timeout=None)
+[2025-01-07 23:17:31,372][flwr][INFO] - Flower VCE: Ray initialized with resources: {'CPU': 8.0, 'node:127.0.0.1': 1.0, 'memory': 12211598132.0, 'object_store_memory': 6105799065.0, 'GPU': 1.0}
+[2025-01-07 23:17:31,374][flwr][INFO] - Initializing global parameters
+[2025-01-07 23:17:31,374][flwr][INFO] - Requesting initial parameters from one random client
+[2025-01-07 23:17:35,350][flwr][INFO] - Received initial parameters from one random client
+[2025-01-07 23:17:35,350][flwr][INFO] - Evaluating initial parameters
+[2025-01-07 23:17:37,841][flwr][INFO] - initial parameters (loss, other metrics): 0.3543270081281662, {'Server Validation IoU': 0.03560283562758555}
+[2025-01-07 23:17:37,842][flwr][INFO] - FL starting
+[2025-01-07 23:17:37,843][flwr][DEBUG] - fit_round 1: strategy sampled 1 clients (out of 2)
+[2025-01-07 23:17:43,168][flwr][DEBUG] - fit_round 1 received 1 results and 0 failures
+[2025-01-07 23:17:43,221][flwr][WARNING] - No fit_metrics_aggregation_fn provided
+[2025-01-07 23:17:43,327][flwr][INFO] - fit progress: (1, 0.3337606340646744, {'Server Validation IoU': 0.6481738425065521}, 5.483954000000001)
+[2025-01-07 23:17:43,327][flwr][DEBUG] - evaluate_round 1: strategy sampled 1 clients (out of 2)
+[2025-01-07 23:17:43,801][flwr][DEBUG] - evaluate_round 1 received 1 results and 0 failures
+[2025-01-07 23:17:43,801][flwr][WARNING] - No evaluate_metrics_aggregation_fn provided
+[2025-01-07 23:17:43,801][flwr][INFO] - FL finished in 5.959072899999999
+[2025-01-07 23:17:43,801][flwr][INFO] - app_fit: losses_distributed [(1, 0.25846003741025925)]
+[2025-01-07 23:17:43,801][flwr][INFO] - app_fit: metrics_distributed_fit {}
+[2025-01-07 23:17:43,801][flwr][INFO] - app_fit: metrics_distributed {}
+[2025-01-07 23:17:43,801][flwr][INFO] - app_fit: losses_centralized [(0, 0.3543270081281662), (1, 0.3337606340646744)]
+[2025-01-07 23:17:43,801][flwr][INFO] - app_fit: metrics_centralized {'Server Validation IoU': [(0, 0.03560283562758555), (1, 0.6481738425065521)]}
