@@ -1,0 +1,16 @@
+name: flwr_env  # Name of the environment
+channels:
+    - pytorch         # PyTorch channel for PyTorch-related packages
+    - nvidia          # NVIDIA channel for GPU-related packages
+dependencies:
+    - python=3.9.0      # Specify Python version
+    - pytorch==1.13.1  # PyTorch package version 1.13.1
+    - torchvision==0.14.1  # TorchVision package version 0.14.1
+    - torchaudio==0.13.1  # TorchAudio package version 0.13.1
+    - pytorch-cuda=11.6  # CUDA version 11.6
+    - pip              # Install pip
+    - pip:            # Install packages using pip
+        - flwr==1.4.0
+        - hydra-core==1.3.2
+        - ray==1.11.1
+
