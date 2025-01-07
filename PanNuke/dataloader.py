@@ -78,5 +78,4 @@ def load_data(batch_size, means, stds):
     }
 
     return dataloaders
-git config --global user.email "M.Abdelmaged@nu.edu.eg"
-git config --global user.name "essawey"
+
