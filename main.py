@@ -33,9 +33,6 @@ def main(cfg: DictConfig):
         means=means,
         stds=stds
     )
-    print(f"Train dataset size : {len(dataloaders['Train'][0])}")
-    print(f"Validation dataset size : {len(dataloaders['Validation'][0])}")
-    print(f"Test dataset size : {len(dataloaders['Test'])}")
 
     ## 3. Define your clients
 
@@ -73,6 +70,7 @@ def main(cfg: DictConfig):
                                     )
 
     print(f"Number of clients main : {cfg.num_clients}")
+
     ## 4. Define your strategy
     strategy = fl.server.strategy.FedAvg(
         fraction_fit=0.00001,
@@ -96,7 +94,7 @@ def main(cfg: DictConfig):
         num_clients=cfg.num_clients,
         config=fl.server.ServerConfig(num_rounds=cfg.num_rounds),
         strategy=strategy,
-        client_resources={"num_cpus": cfg.num_cpus, "num_gpus": cfg.num_gpus},
+        client_resources={"num_cpus": cfg.num_cpus,"num_gpus": cfg.num_gpus},
     )
     ## 6. Save your results
     from hydra.core.hydra_config import HydraConfig
@@ -104,13 +102,13 @@ def main(cfg: DictConfig):
     import pickle
 
     save_path = HydraConfig.get().runtime.output_dir
-    results_path = os.path.join(save_path, "results.json")
+    save_path = os.path.join(save_path, "results.json")
 
     results = {
         "history" : history
     }
 
-    with open(results_path, "wb") as file:
+    with open(save_path, "wb") as file:
         pickle.dump(results, file , protocol=pickle.HIGHEST_PROTOCOL)
 
 if __name__ == "__main__":

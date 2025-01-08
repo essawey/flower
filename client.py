@@ -16,6 +16,7 @@ class FlowerClient(fl.client.NumPyClient):
                 optimizer: torch.optim.Optimizer,
                 scheduler: lr_scheduler._LRScheduler,
                 save_dir: str,
+                client_id: str
                 ) -> None:
         super().__init__()
         
@@ -28,7 +29,7 @@ class FlowerClient(fl.client.NumPyClient):
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.save_dir = save_dir
-
+        self.client_id = client_id
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Initialize the trainer instance
@@ -43,6 +44,7 @@ class FlowerClient(fl.client.NumPyClient):
             scheduler=self.scheduler,
             save_dir=self.save_dir,
             device=self.device,
+            client_id = self.client_id
         )
     def set_parameters(self, parameters):
 
@@ -110,6 +112,7 @@ def generate_client_fn(dataloaders: dict,
             optimizer = optimizer,
             scheduler = scheduler,
             save_dir = save_dir,
+            client_id = cid
         )
 
     return client_fn

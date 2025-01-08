@@ -5,9 +5,7 @@ from tqdm import trange
 import torch
 from torch.utils.data import DataLoader
 import torch.optim.lr_scheduler as lr_scheduler
-
 from .utils import save_model, plot_curve
-
 
 class Trainer:
 
@@ -21,12 +19,14 @@ class Trainer:
                  optimizer: torch.optim.Optimizer,
                  scheduler: lr_scheduler._LRScheduler,
                  save_dir: str,
-                 device: torch.device):
+                 device: torch.device,
+                 client_id: str,
+                 ):
 
         self.model = model
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
-        self.epochs = epochs
+        self.epoch = 0
         self.epochs = epochs
         self.metric = metric
         self.criterion = criterion
@@ -34,7 +34,7 @@ class Trainer:
         self.scheduler = scheduler
         self.save_dir = save_dir
         self.device = device
-
+        self.client_id = client_id
         # Create empty results dictionary
         self.results = {
             "train_loss": [],
@@ -55,7 +55,7 @@ class Trainer:
         progressbar = trange(self.epochs, desc="Training")
         for _ in progressbar:
             # Epochs counter
-            self.epochs += 1
+            self.epoch += 1
             #progressbar.set_description(f"Epochs {self.epochs}")
 
             # Training block
@@ -94,14 +94,16 @@ class Trainer:
             #progressbar.set_description(f'\nTrain loss: {self.results["train_loss"][-1]} Train iou: {self.results["train_iou"][-1]}')
 
             print(
-                f"LOACL MODEL TRAINING LOSS"
-                f"\nEpochs {self.epochs}:"
-                f"Train loss: {self.results['train_loss'][-1]:.3f}"
-                f"Train IoU: {self.results['train_iou'][-1]:.3f}"
+                f'''
+                LOACL TRAINING
+                Epoch: {self.epoch}
+                Train loss: {self.results['train_loss'][-1]:.3f}
+                Train IoU: {self.results['train_iou'][-1]:.3f}
+                '''
             )
 
             # Save checkpoints every epochs
-            # save_model(self.model, self.save_dir, self.epochs)
+            save_model(self.model, self.save_dir, self.epochs, self.client_id)
 
         time_elapsed = time.time() - start_time
         print('\n')
@@ -109,7 +111,7 @@ class Trainer:
         print(f'Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s')
 
         # plot training curve
-        # plot_curve(results=self.results, epochs=self.epochs)
+        plot_curve(results=self.results, epochs=self.epochs)
 
         return self.results
 
@@ -142,9 +144,11 @@ class Trainer:
 
 
         print(
-            f"LOACL MODEL VALIDATION LOSS"
-            f"Validation loss: {self.results['val_loss'][-1]:.3f}"
-            f"Validation IoU: {self.results['val_iou'][-1]:.3f}"
+            f'''
+            LOACL MODEL VALIDATION LOSS
+            Validation loss: {self.results['val_loss'][-1]:.3f}
+            Validation IoU: {self.results['val_iou'][-1]:.3f}
+            '''
         )
         
         return self.results

@@ -2,6 +2,7 @@ from omegaconf import DictConfig
 import torch
 from collections import OrderedDict
 
+
 def get_on_fit_config(cfg: DictConfig):
 
     def fit_config_fn(server_round: int):
@@ -20,11 +21,10 @@ def get_on_fit_config(cfg: DictConfig):
 
     return fit_config_fn
 
-
 def get_evaluate_fn(model, test_dataloader, criterion, metric):
 
     def evaluate_fn(server_round: int, parameters, config):
-
+        
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
@@ -114,9 +114,9 @@ def get_evaluate_fn(model, test_dataloader, criterion, metric):
 
         print(
             f'''
-            SERVER EVALUATION fn:\n
-            Validation loss: {val_loss:.3f}\n
-            Validation IoU: {val_iou:.3f}\n
+            SERVER EVALUATION fn:
+            Validation loss: {val_loss:.3f}
+            Validation IoU: {val_iou:.3f}
             '''
         )
 
