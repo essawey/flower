@@ -1,0 +1,3 @@
+_target_: Models.MeanIoU
+smooth: 1.0
+num_classes: ${num_classes} 

@@ -1,26 +1,30 @@
 num_clients: 2
 
 num_cpus: 2
-num_gpus: 1
+num_gpus: 0.5
 
 num_clients_per_round_fit: 1
 num_clients_per_round_eval: 1
 batch_size: 2
 patch_size: 192
-num_rounds: 3
+num_rounds: 2
 num_classes: 6
 
 client_config:
-  local_epochs: 5
+  local_epochs: 2
   lr: 0.01
   step_size: 7
   gamma: 0.1
   save_dir: ./saved_models
 
-unet:
-  encoder_name: mit_b0
-  encoder_weights: imagenet
 
 defaults:
-  - model: unet.yaml
+  - model: Unet
   - strategy: FedAvg
+  - criterion: DiceLoss
+  - metric: MeanIoU
+
+dataloaders:
+  _target_: PanNuke.load_data
+  batch_size: ${batch_size}
+

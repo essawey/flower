@@ -21,7 +21,7 @@ def get_on_fit_config(cfg: DictConfig):
 
     return fit_config_fn
 
-def get_evaluate_fn(model, test_dataloader, criterion, metric):
+def get_evaluate_fn(model, dataloader, criterion, metric):
 
     def evaluate_fn(server_round: int, parameters, config):
         
@@ -89,7 +89,7 @@ def get_evaluate_fn(model, test_dataloader, criterion, metric):
         running_ious, running_losses, count = 0, 0, 0
 
         # Validation loop
-        for x, y in test_dataloader:
+        for x, y in dataloader["Test"]:
             # Send to device (GPU or CPU)
             inputs = x.to(device)
             targets = y.to(device)
