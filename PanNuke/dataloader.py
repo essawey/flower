@@ -1,13 +1,14 @@
 # pannuke/dataloader.py
-
 from torch.utils.data import DataLoader
-from .dataset import SemanticSegmentationDataset
+from .dataset import SemanticSegmentationDataset, getMeansAndStds
 # from .transforms import get_data_augmentation
 import pandas as pd
 import glob
 import os
 
-def load_data(batch_size, means, stds):
+def load_data(batch_size):
+
+
     image_dir = os.path.join(os.getcwd(), 'PanNuke', 'data', 'Patched', '**', '*.png')
     mask_dir = os.path.join(os.getcwd(), 'PanNuke', 'data', 'Patched', '**', '*.npy')
 
@@ -41,6 +42,7 @@ def load_data(batch_size, means, stds):
     server_test_df = df[df['split'].str.contains("Test")]
 
     # Data augmentation transforms
+    # means, stds = getMeansAndStds()
     # data_augmentation = get_data_augmentation(means, stds)
 
     # Define datasets for Train, Validation, and Test

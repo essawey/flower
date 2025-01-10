@@ -1,7 +1,7 @@
 import hydra
 from omegaconf import DictConfig
 from client import generate_client_fn
-from PanNuke import load_data, getMeansAndStds
+from PanNuke import load_data
 from Models import  MeanIoU
 import torch
 import flwr as fl
@@ -18,30 +18,20 @@ def main(cfg: DictConfig):
 
     ## 2. Prepare your dataset
 
-    # 2.1 Get means and stds
-    # means, stds = getMeansAndStds()
-
-    means = [0.7039875984191895, 0.5724194049835205, 0.7407296895980835]
-    stds = [0.12305392324924469, 0.16210812330245972, 0.14659656584262848]
-
-    print(f"Means : {means}")
-    print(f"Stds : {stds}")
-
     # 2.2 Load the data
     dataloaders = load_data(
         batch_size = cfg.batch_size,
-        means=means,
-        stds=stds
     )
+    # dataloaders: ${load_data}
 
     ## 3. Define your clients
 
     # 3.1 Configarations
-    epochs = cfg.local_epochs
-    lr = cfg.lr
-    step_size = cfg.step_size
-    gamma = cfg.gamma
-    save_dir = cfg.save_dir
+    epochs = cfg.client_config.local_epochs
+    lr = cfg.client_config.lr
+    step_size = cfg.client_config.step_size
+    gamma = cfg.client_config.gamma
+    save_dir = cfg.client_config.save_dir
 
     # 3.2 Models
     model = instantiate(cfg.model)
@@ -50,11 +40,14 @@ def main(cfg: DictConfig):
         mode="multilabel",  # Since y_true is one-hot encoded
         from_logits=True,   # Your model outputs raw logits
         smooth=1.0,         # Smooth term to avoid division by zero
-        ignore_index=None,  # Use None if no pixels should be ignored
+        ignore_index=-1,    # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
         log_loss=False      # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
     )
     
-    metric = MeanIoU()
+    metric = MeanIoU(
+        smooth=1.0,
+        num_classes=cfg.num_classes
+    )
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
@@ -86,6 +79,7 @@ def main(cfg: DictConfig):
                                     ),
         # fit_metrics_aggregation_fn=
     )
+
     print(f"Number of clients : {cfg.num_rounds}")
 
     ## 5. Start Simulation
@@ -94,7 +88,7 @@ def main(cfg: DictConfig):
         num_clients=cfg.num_clients,
         config=fl.server.ServerConfig(num_rounds=cfg.num_rounds),
         strategy=strategy,
-        client_resources={"num_cpus": cfg.num_cpus,"num_gpus": cfg.num_gpus},
+        client_resources={"num_cpus": cfg.num_cpus, "num_gpus": cfg.num_gpus},
     )
     ## 6. Save your results
     from hydra.core.hydra_config import HydraConfig

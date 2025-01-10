@@ -12,10 +12,10 @@ def get_on_fit_config(cfg: DictConfig):
             #FIXME: Implement a learning rate scheduler for server rounds
 
         return {
-            'lr': cfg.lr,
-            "local_epochs": cfg.local_epochs,
-            "step_size": cfg.step_size,
-            "gamma": cfg.gamma,
+            'lr': cfg.client_config.lr,
+            "local_epochs": cfg.client_config.local_epochs,
+            "step_size": cfg.client_config.step_size,
+            "gamma": cfg.client_config.gamma,
         }
     
 
@@ -26,7 +26,6 @@ def get_evaluate_fn(model, test_dataloader, criterion, metric):
     def evaluate_fn(server_round: int, parameters, config):
         
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
 
         params_dict = zip(model.state_dict().keys(), parameters)
         state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})

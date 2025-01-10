@@ -70,4 +70,4 @@ def getMeansAndStds():
     means /= len(train_data)
     stds /= len(train_data)
 
-    return means.tolist(), stds.tolist()
+    return {"means":means.tolist(), "stds":stds.tolist()}

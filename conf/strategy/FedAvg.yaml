@@ -1,0 +1,18 @@
+# FedAvg strategy configuration yaml file
+_target_: flwr.server.strategy.FedAvg
+
+fraction_fit: 0.00001
+min_fit_clients: ${num_clients_per_round_fit}
+fraction_evaluate: 0.00001
+min_evaluate_clients: ${num_clients_per_round_eval}
+min_available_clients: ${num_clients}
+on_fit_config_fn:
+  _target_: server.get_on_fit_config
+  cfg: ${cfg.client_config}
+
+evaluate_fn:
+  _target_: server.get_evaluate_fn
+  model: model
+  test_dataloader: dataloaders['Test']
+  criterion: criterion
+  metric: metric
