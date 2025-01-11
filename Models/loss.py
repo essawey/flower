@@ -1,7 +1,5 @@
-import torch
 from torch import nn
 import torch.nn.functional as F
-from hydra.utils import instantiate
 from omegaconf import DictConfig
 
 
@@ -19,9 +17,13 @@ class CombinedLoss(nn.Module):
     def __init__(self, config: DictConfig, mode=None, from_logits=None, smooth=None, ignore_index=None, log_loss=None):
         super().__init__()
         self.config = config
+        self.mode = mode
+        self.from_logits = from_logits
+        self.smooth = smooth
+        self.ignore_index = ignore_index
+        self.log_loss = log_loss
 
         # self.cross_entropy_loss = CategoricalCrossEntropyLoss()
-
         self.DiceLoss = config["DiceLoss"]
         self.FocalLoss = config["FocalLoss"]
         self.LovaszLoss = config["LovaszLoss"]
