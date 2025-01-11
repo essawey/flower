@@ -23,7 +23,7 @@ class CombinedLoss(nn.Module):
         self.ignore_index = ignore_index
         self.log_loss = log_loss
 
-        # self.cross_entropy_loss = CategoricalCrossEntropyLoss()
+        self.cross_entropy_loss = CategoricalCrossEntropyLoss()
         self.DiceLoss = config["DiceLoss"]
         self.FocalLoss = config["FocalLoss"]
         self.LovaszLoss = config["LovaszLoss"]

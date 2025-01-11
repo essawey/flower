@@ -1,7 +1,7 @@
 import subprocess
 
-subprocess.run("conda create --name flower2 python=3.9.0 -y", shell=True)
-subprocess.run("conda activate flower2", shell=True)
+subprocess.run("conda create --name flower python=3.9.0 -y", shell=True)
+subprocess.run("conda activate flower", shell=True)
 
 subprocess.run("conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.6 -c pytorch -c nvidia -y", shell=True)
 

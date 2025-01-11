@@ -8,7 +8,7 @@ import os
 
 
 # Save the model to the target dir
-def save_model(model: torch.nn.Module, target_dir: str, epoch: int, client_id: str):
+def save_model(model: torch.nn.Module, target_dir: str, client_id: str):
     """
     Saves a PyTorch model to a target directory.
     """
@@ -21,11 +21,11 @@ def save_model(model: torch.nn.Module, target_dir: str, epoch: int, client_id: s
     folders = [folder for folder in os.listdir(target_dir) if os.path.isdir(os.path.join(target_dir, folder))]
     roundsSaved = [int(re.search(r'\d', text).group()) if re.search(r'\d', text) else 1 for text in folders] + [1]
 
-    if os.path.exists(os.path.join(target_dir, f"model_round_{1}_client_{client_id}_epoch_{epoch}")):
+    if os.path.exists(os.path.join(target_dir, f"model_round_{1}_client_{client_id}")):
         current_round = max(roundsSaved) + 1
     else:
         current_round = max(roundsSaved)
-    model_save_path = target_dir_path / f"model_round_{current_round}_client_{client_id}_epoch_{epoch}"
+    model_save_path = target_dir_path / f"model_round_{current_round}_client_{client_id}"
 
     # Save the model using segmentation_models_pytorch utility
     model.save_pretrained(save_directory=model_save_path, push_to_hub=False)

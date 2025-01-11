@@ -88,14 +88,18 @@ class Trainer:
                 self.optimizer.step()
 
             # self.scheduler.step()
+            print("-"*20)
+            print(self.client_id)
             print(self.results)
+            print("-"*20)
+
             self.results["train_loss"].append(np.mean(running_losses))
             self.results["train_iou"].append(np.mean(running_ious))
             #progressbar.set_description(f'\nTrain loss: {self.results["train_loss"][-1]} Train iou: {self.results["train_iou"][-1]}')
 
             print(
                 f'''
-                LOACL TRAINING
+                LOACL TRAINING for {self.client_id}
                 Epoch: {self.epoch}
                 Train loss: {self.results['train_loss'][-1]:.3f}
                 Train IoU: {self.results['train_iou'][-1]:.3f}
@@ -103,7 +107,7 @@ class Trainer:
             )
 
             # Save checkpoints every epochs
-            save_model(self.model, self.save_dir, self.epochs, self.client_id)
+            save_model(self.model, self.save_dir, self.client_id)
 
         time_elapsed = time.time() - start_time
         print('\n')
@@ -146,7 +150,7 @@ class Trainer:
 
         print(
             f'''
-            LOACL MODEL VALIDATION LOSS
+            LOACL MODEL VALIDATION LOSS for {self.client_id}
             Validation loss: {self.results['val_loss'][-1]:.3f}
             Validation IoU: {self.results['val_iou'][-1]:.3f}
             '''

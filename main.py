@@ -9,9 +9,13 @@ from hydra.utils import instantiate
 @hydra.main(config_path="conf", config_name="base", version_base=None)
 def main(cfg: DictConfig):
 
+    import shutil
+    shutil.rmtree("saved_models")
+
+
     ## 1. Parse config & get experiment output dir
     from omegaconf import OmegaConf
-    print(OmegaConf.to_yaml(cfg))
+    # print(OmegaConf.to_yaml(cfg))
 
     
     ## 2. Prepare your dataset
