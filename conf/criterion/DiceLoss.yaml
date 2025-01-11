@@ -1,6 +1,6 @@
 _target_: segmentation_models_pytorch.losses.DiceLoss
-mode: multilabel    # Since y_true is one-hot encoded
-from_logits: true   # Your model outputs raw logits
-smooth: 1.0         # Smooth term to avoid division by zero
-ignore_index: null  # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
-log_loss: false     # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
+mode: multilabel              # Since y_true is one-hot encoded
+from_logits: true             # Your model outputs raw logits
+smooth: ${smooth}             # Smooth term to avoid division by zero
+ignore_index: ${ignore_index} # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
+log_loss: ${log_loss}         # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff

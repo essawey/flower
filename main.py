@@ -11,8 +11,11 @@ def main(cfg: DictConfig):
 
     ## 1. Parse config & get experiment output dir
     from omegaconf import OmegaConf
-    # print(OmegaConf.to_yaml(cfg))
+    print(OmegaConf.to_yaml(cfg))
+
+    
     ## 2. Prepare your dataset
+    criterion = instantiate(cfg.criterion)
 
     # 2.2 Load the data
     dataloaders = instantiate(cfg.dataloaders)
@@ -34,7 +37,7 @@ def main(cfg: DictConfig):
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
     # 3.3 Clients
-    client_fn =  generate_client_fn(dataloaders,
+    client_fn = generate_client_fn(dataloaders,
                                     model,
                                     epochs,
                                     criterion,

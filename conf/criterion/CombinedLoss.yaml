@@ -1,0 +1,5 @@
+_target_: Models.CombinedLoss
+config:
+  ${DiceLoss}
+  ${FocalLoss}
+  ${LovaszLoss}
