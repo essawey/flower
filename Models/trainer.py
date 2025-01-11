@@ -43,7 +43,9 @@ class Trainer:
             "train_loss": [],
             "train_iou": [],
             "val_loss": [],
-            "val_iou": []
+            "val_iou": [],
+            "train_dice": [],
+            "val_dice": [],
         }
 
     def train_model(self):
@@ -135,7 +137,7 @@ class Trainer:
         """
         self.model.to(self.device)
         self.model.eval() # Validation mode
-        running_ious, running_losses = [], []
+        running_dices, running_ious, running_losses = [], [], []
 
         for x, y in self.val_dataloader:
             # Send to device (GPU or CPU)
@@ -150,12 +152,19 @@ class Trainer:
                 running_losses.append(loss_value)
 
                 # Calculate the iou
-                iou = self.metric(outputs, targets)
+                iou = self.MeanIoU(outputs, targets)
                 iou_value = iou.item()
                 running_ious.append(iou_value)
 
+                # Calculate the dice
+                dice = self.MeanDice(outputs, targets)
+                dice_value = dice.item()
+                running_dices.append(dice_value)
+
+
         self.results["val_loss"].append(np.mean(running_losses))
         self.results["val_iou"].append(np.mean(running_ious))
+        self.results["val_dice"].append(np.mean(running_dices))
 
 
         print(
@@ -163,6 +172,7 @@ class Trainer:
             LOACL MODEL VALIDATION LOSS for {self.client_id}
             Validation loss: {self.results['val_loss'][-1]:.3f}
             Validation IoU: {self.results['val_iou'][-1]:.3f}
+            Validation Dice: {self.results['val_dice'][-1]:.3f}
             '''
         )
         
