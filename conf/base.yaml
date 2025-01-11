@@ -14,19 +14,14 @@ smooth: 1.0        # Smooth term to avoid division by zero
 ignore_index: null # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
 log_loss: false    # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
 
-DiceLoss: DiceLoss       # create a key "DiceLoss" that points to DiceLoss.yaml
-FocalLoss: FocalLoss     # create a key "FocalLoss"
-LovaszLoss: LovaszLoss   # create a key "LovaszLoss"
-
-
 defaults:
   - model: Unet
   - strategy: FedAvg
   - criterion: CombinedLoss
   - metric: MeanIoU
-  - criterion/DiceLoss.yaml
-  - criterion/FocalLoss.yaml
-  - criterion/CombinedLoss.yaml
+  - DiceLoss: DiceLoss
+  - FocalLoss: FocalLoss
+  - LovaszLoss: LovaszLoss
   
 dataloaders:
   _target_: PanNuke.load_data

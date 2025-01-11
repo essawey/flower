@@ -16,15 +16,15 @@ class CategoricalCrossEntropyLoss(nn.Module):
 
 
 class CombinedLoss(nn.Module):
-    def __init__(self, config: DictConfig, mode, from_logits, smooth, ignore_index, log_loss):
+    def __init__(self, config: DictConfig, mode=None, from_logits=None, smooth=None, ignore_index=None, log_loss=None):
         super().__init__()
         self.config = config
 
         # self.cross_entropy_loss = CategoricalCrossEntropyLoss()
 
-        self.DiceLoss = instantiate(config.DiceLoss)
-        self.FocalLoss = instantiate(config.FocalLoss)
-        self.LovaszLoss = instantiate(config.LovaszLoss)
+        self.DiceLoss = config["DiceLoss"]
+        self.FocalLoss = config["FocalLoss"]
+        self.LovaszLoss = config["LovaszLoss"]
 
     def forward(self, y_pred, y_true):
         return (
