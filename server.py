@@ -2,6 +2,51 @@ from omegaconf import DictConfig
 import torch
 from collections import OrderedDict
 
+def get_fit_metrics_aggregation_fn():
+    def weighted_average(metrics):
+        """
+        metrics: A list of tuples where:
+        - The first element is the number of examples (int).
+        - The second element is a dictionary of arbitrary metrics, e.g. {"train_loss": 0.2, "val_accuracy": 0.8, ...}
+
+        Returns:
+        A dictionary whose keys are all the metric names found among the input, and whose values
+        are the weighted averages (weighted by the number of examples).
+        """
+
+        # 1. Collect all possible keys
+        all_keys = set()
+        for _, metric_dict in metrics:
+            all_keys.update(metric_dict.keys())
+
+        # 2. Initialize accumulators for each key
+        weighted_sums = {key: 0.0 for key in all_keys}
+        total_examples = 0
+
+        # 3. Accumulate weighted sums
+        for num_examples, metric_dict in metrics:
+            total_examples += num_examples
+            for key in all_keys:
+                # If a key is missing for a particular client, decide how you want to handle it:
+                # Option A: Treat missing as 0
+                value = metric_dict.get(key, 0.0)
+                # Option B: Skip if missing (would need more sophisticated logic)
+
+                weighted_sums[key] += num_examples * float(value)
+
+        # 4. Compute weighted averages
+        if total_examples == 0:
+            # Edge case: if total_examples is 0, return zeros or handle however appropriate
+            return {key: 0.0 for key in all_keys}
+
+        weighted_avgs = {
+            key: weighted_sums[key] / total_examples for key in all_keys
+        }
+
+        return weighted_avgs
+
+    return weighted_average
+
 
 def get_on_fit_config(cfg: DictConfig):
 
@@ -24,7 +69,7 @@ def get_evaluate_fn(model, dataloader, criterion, metric):
 
     def evaluate_fn(server_round: int, parameters, config):
         
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         params_dict = zip(model.state_dict().keys(), parameters)
         state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})

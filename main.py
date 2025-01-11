@@ -1,9 +1,8 @@
 import hydra
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 from client import generate_client_fn
 import torch
 import flwr as fl
-from server import get_on_fit_config, get_evaluate_fn
 from hydra.utils import instantiate
 
 
@@ -11,7 +10,8 @@ from hydra.utils import instantiate
 def main(cfg: DictConfig):
 
     ## 1. Parse config & get experiment output dir
-    print(OmegaConf.to_yaml(cfg))
+    from omegaconf import OmegaConf
+    # print(OmegaConf.to_yaml(cfg))
     ## 2. Prepare your dataset
 
     # 2.2 Load the data
@@ -29,7 +29,6 @@ def main(cfg: DictConfig):
     # 3.2 Models
     model = instantiate(cfg.model)
     criterion = instantiate(cfg.criterion)
-
     metric = instantiate(cfg.metric)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
@@ -45,7 +44,6 @@ def main(cfg: DictConfig):
                                     save_dir,
                                     )
 
-    print(f"Number of clients main : {cfg.num_clients}")
 
     ## 4. Define your strategy
     strategy = instantiate(cfg.strategy)
@@ -61,10 +59,9 @@ def main(cfg: DictConfig):
     #                                 criterion,
     #                                 metric,
     #                                 ),
-    #     # fit_metrics_aggregation_fn=
+    #     # fit_metrics_aggregation_fn=None
     # )
 
-    print(f"Number of clients : {cfg.num_rounds}")
 
     ## 5. Start Simulation
     history = fl.simulation.start_simulation(

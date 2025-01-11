@@ -51,7 +51,7 @@ class Trainer:
         calculating the time taken for training and validation.
         """
         start_time = time.time()
-
+        self.model.to(self.device)
         progressbar = trange(self.epochs, desc="Training")
         for _ in progressbar:
             # Epochs counter
@@ -119,6 +119,7 @@ class Trainer:
         """
         Validation Mode
         """
+        self.model.to(self.device)
         self.model.eval() # Validation mode
         running_ious, running_losses = [], []
 
