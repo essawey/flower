@@ -1,5 +1,5 @@
 import hydra
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from client import generate_client_fn
 import torch
 import flwr as fl
@@ -11,8 +11,7 @@ from hydra.utils import instantiate
 def main(cfg: DictConfig):
 
     ## 1. Parse config & get experiment output dir
-    # print(OmegaConf.to_yaml(cfg))
-
+    print(OmegaConf.to_yaml(cfg))
     ## 2. Prepare your dataset
 
     # 2.2 Load the data

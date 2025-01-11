@@ -10,12 +10,11 @@ def get_on_fit_config(cfg: DictConfig):
         if server_round > 2:
             pass
             #FIXME: Implement a learning rate scheduler for server rounds
-
         return {
-            'lr': cfg.client_config.lr,
-            "local_epochs": cfg.client_config.local_epochs,
-            "step_size": cfg.client_config.step_size,
-            "gamma": cfg.client_config.gamma,
+            'lr': cfg.lr,
+            "local_epochs": cfg.local_epochs,
+            "step_size": cfg.step_size,
+            "gamma": cfg.gamma,
         }
     
 
