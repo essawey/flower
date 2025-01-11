@@ -24,7 +24,8 @@ defaults:
   - model: Segformer
   - strategy: FedAvg
   - criterion: DiceLoss
-  - metric: MeanIoU
+  - MeanIoU: MeanIoU
+  - MeanDice: MeanDice
   - DiceLoss: DiceLoss
   - FocalLoss: FocalLoss
   - LovaszLoss: LovaszLoss

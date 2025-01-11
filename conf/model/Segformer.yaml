@@ -1,4 +1,4 @@
-_target_: Models.Segformer # Model class
+_target_: Models.Segformer.Segformer # Model class
 encoder_name: efficientnet-b4        # Name of the encoder
 encoder_depth: 5                     # in range [3, 5]
 encoder_weights: imagenet            # Pre-trained weights

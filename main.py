@@ -42,7 +42,7 @@ def main(cfg: DictConfig):
     MeanIoU = instantiate(cfg.MeanIoU)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
-
+    
     # 3.3 Clients
     client_fn = generate_client_fn(dataloaders,
                                     model,

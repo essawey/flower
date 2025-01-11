@@ -65,7 +65,7 @@ def get_on_fit_config(cfg: DictConfig):
 
     return fit_config_fn
 
-def get_evaluate_fn(model, dataloader, criterion, metric):
+def get_evaluate_fn(model, dataloader, criterion, MeanDice, MeanIoU):
 
     def evaluate_fn(server_round: int, parameters, config):
         
@@ -130,7 +130,7 @@ def get_evaluate_fn(model, dataloader, criterion, metric):
 
         model.eval() 
 
-        running_ious, running_losses, count = 0, 0, 0
+        running_dices, running_ious, running_losses, count = 0, 0, 0, 0
 
         # Validation loop
         for x, y in dataloader["Test"]:
@@ -147,22 +147,29 @@ def get_evaluate_fn(model, dataloader, criterion, metric):
                 running_losses += loss_value
 
                 # Calculate the IoU
-                iou = metric(outputs, targets)
+                iou = MeanIoU(outputs, targets)
                 iou_value = iou.item()
                 running_ious += iou_value
+
+                dice = MeanDice(outputs, targets)
+                dice_value = dice.item()
+                running_dices += dice_value
+
                 count += 1
 
         val_loss = running_losses / count
         val_iou = running_ious / count
+        val_dice = running_dices / count
 
         print(
             f'''
             SERVER EVALUATION fn:
             Validation loss: {val_loss:.3f}
             Validation IoU: {val_iou:.3f}
+            Validation Dice: {val_dice:.3f}
             '''
         )
 
-        return val_loss, {"Server Validation IoU" : val_iou}
+        return val_loss, {"Server Validation IoU" : val_iou, "Server Validation Dice" : val_dice}
 
     return evaluate_fn

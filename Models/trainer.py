@@ -63,7 +63,7 @@ class Trainer:
 
             # Training block
             self.model.train() # training mode
-            running_ious, running_losses = [], []
+            running_dices, running_ious, running_losses = [], [], []
 
             for x, y in self.train_dataloader:
                 # Send to device (GPU or CPU)
@@ -81,9 +81,14 @@ class Trainer:
                 running_losses.append(loss_value)
 
                 # Calculate the iou
-                iou = self.metric(outputs, targets)
+                iou = self.MeanIoU(outputs, targets)
                 iou_value = iou.item()
                 running_ious.append(iou_value)
+
+                # Calculate the dice
+                dice = self.MeanDice(outputs, targets)
+                dice_value = dice.item()
+                running_dices.append(dice_value)
 
                 # Backward pass
                 loss.backward()
@@ -98,6 +103,8 @@ class Trainer:
 
             self.results["train_loss"].append(np.mean(running_losses))
             self.results["train_iou"].append(np.mean(running_ious))
+            self.results["train_dice"].append(np.mean(running_dices))
+
             #progressbar.set_description(f'\nTrain loss: {self.results["train_loss"][-1]} Train iou: {self.results["train_iou"][-1]}')
 
             print(

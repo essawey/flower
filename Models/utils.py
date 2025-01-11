@@ -32,12 +32,15 @@ def save_model(model: torch.nn.Module, target_dir: str, client_id: str):
 
 # Plot the training curve
 def plot_curve(results: dict, epochs: int):
-    pass
-    # train_ious = np.array(results["train_iou"])
-    # train_losses = np.array(results["train_loss"])
 
-    # plt.plot(np.arange(0, epochs, 1), train_losses, label='Train loss')
-    # plt.plot(np.arange(0, epochs, 1), train_ious, label='Train IoU')
-    # plt.xlabel('Epoch')
-    # plt.legend(loc='upper right')
-    # plt.show()
+    train_ious = np.array(results["train_iou"])
+    train_dices = np.array(results["train_dice"])
+    train_losses = np.array(results["train_loss"])
+
+    plt.plot(np.arange(0, epochs, 1), train_losses, label='Train loss')
+    plt.plot(np.arange(0, epochs, 1), train_ious, label='Train IoU')
+    plt.plot(np.arange(0, epochs, 1), train_dices, label='Train Dice')
+
+    plt.xlabel('Epoch')
+    plt.legend(loc='upper right')
+    plt.savefig("FIXME.png")
