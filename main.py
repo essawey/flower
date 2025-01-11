@@ -9,9 +9,11 @@ from hydra.utils import instantiate
 @hydra.main(config_path="conf", config_name="base", version_base=None)
 def main(cfg: DictConfig):
 
-    import shutil
-    shutil.rmtree("saved_models")
-
+    try:    
+        import shutil
+        shutil.rmtree("saved_models")
+    except:
+        pass
 
     ## 1. Parse config & get experiment output dir
     from omegaconf import OmegaConf
@@ -36,7 +38,8 @@ def main(cfg: DictConfig):
     # 3.2 Models
     model = instantiate(cfg.model)
     criterion = instantiate(cfg.criterion)
-    metric = instantiate(cfg.metric)
+    MeanDice = instantiate(cfg.MeanDice)
+    MeanIoU = instantiate(cfg.MeanIoU)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
@@ -45,7 +48,8 @@ def main(cfg: DictConfig):
                                     model,
                                     epochs,
                                     criterion,
-                                    metric,
+                                    MeanDice,
+                                    MeanIoU,
                                     optimizer,
                                     scheduler,
                                     save_dir,

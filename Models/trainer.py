@@ -14,7 +14,8 @@ class Trainer:
                  train_dataloader: DataLoader,
                  val_dataloader: DataLoader,
                  epochs: int,
-                 metric: torch.nn.Module,
+                 MeanIoU: torch.nn.Module,
+                 MeanDice: torch.nn.Module,
                  criterion: torch.nn.Module,
                  optimizer: torch.optim.Optimizer,
                  scheduler: lr_scheduler._LRScheduler,
@@ -28,7 +29,9 @@ class Trainer:
         self.val_dataloader = val_dataloader
         self.epoch = 0
         self.epochs = epochs
-        self.metric = metric
+        self.MeanIoU = MeanIoU
+        self.MeanDice = MeanDice
+
         self.criterion = criterion
         self.optimizer = optimizer
         self.scheduler = scheduler

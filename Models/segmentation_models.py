@@ -1,5 +1,4 @@
 
-
 from .Segformer import Segformer
 
 Segformer_model = Segformer(

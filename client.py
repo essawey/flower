@@ -12,7 +12,8 @@ class FlowerClient(fl.client.NumPyClient):
                 model: torch.nn.Module,
                 epochs: int,
                 criterion: torch.nn.Module,
-                metric: torch.nn.Module,
+                MeanDice: torch.nn.Module,
+                MeanIoU: torch.nn.Module,
                 optimizer: torch.optim.Optimizer,
                 scheduler: lr_scheduler._LRScheduler,
                 save_dir: str,
@@ -25,7 +26,8 @@ class FlowerClient(fl.client.NumPyClient):
         self.model = model
         self.epochs = epochs
         self.criterion = criterion
-        self.metric = metric
+        self.MeanDice = MeanDice
+        self.MeanIoU = MeanIoU
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.save_dir = save_dir
@@ -38,7 +40,8 @@ class FlowerClient(fl.client.NumPyClient):
             val_dataloader=self.val_dataloader,
             model=self.model,
             epochs=self.epochs,
-            metric=self.metric,
+            MeanDice=self.MeanDice,
+            MeanIoU=self.MeanIoU,
             criterion=self.criterion,
             optimizer=self.optimizer,
             scheduler=self.scheduler,
@@ -72,8 +75,9 @@ class FlowerClient(fl.client.NumPyClient):
 
         train_loss = results["train_loss"][-1]
         train_iou = results["train_iou"][-1]
-
-        return self.get_parameters({}), len(self.train_dataloader), {"Train Loss": train_loss,"train_iou": train_iou}
+        result_dict = {"Train Loss": train_loss,"train_iou": train_iou}
+        
+        return self.get_parameters({}), len(self.train_dataloader), result_dict
 
     def evaluate(self, parameters, config):
 

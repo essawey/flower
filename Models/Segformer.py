@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from functools import wraps
 from segmentation_models_pytorch.base import modules as md
+import torch.nn.functional as F
 
 from segmentation_models_pytorch.base import (
     ClassificationHead,
