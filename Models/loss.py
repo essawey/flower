@@ -32,16 +32,14 @@ class CombinedLoss(nn.Module):
         return (
             # self.cross_entropy_loss(y_pred, y_true) +
             self.DiceLoss(y_pred, y_true) + 
-            self.FocalLoss(y_pred, y_true) + 
+            self.FocalLoss(y_pred, y_true) +  # FIXME: You can cilp the value of the normalized focal loss [-1,1] to match the DiceLoss and LovaszLoss [0,1]
             self.LovaszLoss(y_pred, y_true)
         )
 
 
+import segmentation_models_pytorch.metrics as metrics
 
-
-
-
-
+metrics.get_stats(mode = 'multilabel',num_classes =6)
 
 
 
