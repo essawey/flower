@@ -1,3 +1,8 @@
 _target_: segmentation_models_pytorch.losses.FocalLoss
 mode: multilabel    # Since y_true is one-hot encoded
+alpha: 0.25
+gamma: 2.0
 ignore_index: null  # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
+reduction: mean
+normalized: true
+reduced_threshold: null
