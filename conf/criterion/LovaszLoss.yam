@@ -1,0 +1,5 @@
+_target_: segmentation_models_pytorch.losses.LovaszLoss
+mode: multilabel    # Since y_true is one-hot encoded
+from_logits: true   # Your model outputs raw logits
+ignore_index: null  # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
+per_image = true,    # If True loss computed per each image and then averaged, else computed per whole batch
