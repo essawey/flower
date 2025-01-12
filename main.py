@@ -1,19 +1,13 @@
-import hydra
 from omegaconf import DictConfig
-from client import generate_client_fn
-import torch
-import flwr as fl
 from hydra.utils import instantiate
 
 
+import hydra
 @hydra.main(config_path="conf", config_name="base", version_base=None)
-def main(cfg: DictConfig):
+def main(cfg: DictConfig) -> None:
 
-    try:    
-        import shutil
-        shutil.rmtree("saved_models")
-    except:
-        pass
+    import shutil
+    shutil.rmtree("saved_models", ignore_errors=True)
 
     ## 1. Parse config & get experiment output dir
     from omegaconf import OmegaConf
@@ -22,7 +16,7 @@ def main(cfg: DictConfig):
     
     ## 2. Prepare your dataset
     criterion = instantiate(cfg.criterion)
-
+    print(criterion)
     # 2.2 Load the data
     dataloaders = instantiate(cfg.dataloaders)
 
@@ -35,32 +29,35 @@ def main(cfg: DictConfig):
     gamma = cfg.client_config.gamma
     save_dir = cfg.client_config.save_dir
 
-    # 3.2 Models
+    # 3.2 torch instantiatation
+    import torch
     model = instantiate(cfg.model)
     criterion = instantiate(cfg.criterion)
-    MeanDice = instantiate(cfg.MeanDice)
-    MeanIoU = instantiate(cfg.MeanIoU)
+
+    metrics = instantiate(cfg.metrics)
+
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
     
-    # 3.3 Clients
+    # 3.3 Clients generataion
+    from client import generate_client_fn
     client_fn = generate_client_fn(dataloaders,
                                     model,
                                     epochs,
                                     criterion,
-                                    MeanDice,
-                                    MeanIoU,
+                                    metrics,
                                     optimizer,
                                     scheduler,
                                     save_dir,
                                     )
 
 
-    ## 4. Define your strategy
+    ## 4. Define the strategy
     strategy = instantiate(cfg.strategy)
 
 
     ## 5. Start Simulation
+    import flwr as fl
     history = fl.simulation.start_simulation(
         client_fn=client_fn,
         num_clients=cfg.num_clients,
@@ -68,10 +65,10 @@ def main(cfg: DictConfig):
         strategy=strategy,
         client_resources={"num_cpus": cfg.num_cpus, "num_gpus": cfg.num_gpus},
     )
-    ## 6. Save your results
+    ## 6. Save the results
     from hydra.core.hydra_config import HydraConfig
-    import os
     import pickle
+    import os
 
     save_path = HydraConfig.get().runtime.output_dir
     save_path = os.path.join(save_path, "results.json")

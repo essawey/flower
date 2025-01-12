@@ -1,2 +1,2 @@
-from Models.segmentation_models import Segformer
-print(Segformer)
+from Models import CombinedLoss
+CombinedLoss()

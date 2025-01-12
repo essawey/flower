@@ -147,13 +147,13 @@ def get_evaluate_fn(model, dataloader, criterion, MeanDice, MeanIoU):
                 running_losses += loss_value
 
                 # Calculate the IoU
-                iou = MeanIoU(outputs, targets)
-                iou_value = iou.item()
-                running_ious += iou_value
+                # iou = MeanIoU(outputs, targets)
+                # iou_value = iou.item()
+                # running_ious += iou_value
 
-                dice = MeanDice(outputs, targets)
-                dice_value = dice.item()
-                running_dices += dice_value
+                # dice = MeanDice(outputs, targets)
+                # dice_value = dice.item()
+                # running_dices += dice_value
 
                 count += 1
 

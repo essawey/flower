@@ -16,20 +16,21 @@ num_clients_per_round_fit: ${num_clients}
 num_clients_per_round_eval: ${num_clients}
 batch_size: 3
 
-smooth: 1.0        # Smooth term to avoid division by zero
+smooth: 1.0        # Smooth term to avoid division by zero for all the losses and metrics
 ignore_index: null # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
 log_loss: false    # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
+
+
 
 defaults:
   - _self_
   - model: Segformer
   - strategy: FedAvg
-  - criterion: DiceLoss
-  - MeanIoU: MeanIoU
-  - MeanDice: MeanDice
+  - criterion: CombinedLoss
   - DiceLoss: DiceLoss
   - FocalLoss: FocalLoss
   - LovaszLoss: LovaszLoss
+  - metrics: metrics
   
 dataloaders:
   _target_: PanNuke.load_data

@@ -12,8 +12,7 @@ class FlowerClient(fl.client.NumPyClient):
                 model: torch.nn.Module,
                 epochs: int,
                 criterion: torch.nn.Module,
-                MeanDice: torch.nn.Module,
-                MeanIoU: torch.nn.Module,
+                metrics: torch.nn.Module,
                 optimizer: torch.optim.Optimizer,
                 scheduler: lr_scheduler._LRScheduler,
                 save_dir: str,
@@ -26,8 +25,7 @@ class FlowerClient(fl.client.NumPyClient):
         self.model = model
         self.epochs = epochs
         self.criterion = criterion
-        self.MeanDice = MeanDice
-        self.MeanIoU = MeanIoU
+        self.metrics = metrics
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.save_dir = save_dir
@@ -40,8 +38,7 @@ class FlowerClient(fl.client.NumPyClient):
             val_dataloader=self.val_dataloader,
             model=self.model,
             epochs=self.epochs,
-            MeanDice=self.MeanDice,
-            MeanIoU=self.MeanIoU,
+            metrics=self.metrics,
             criterion=self.criterion,
             optimizer=self.optimizer,
             scheduler=self.scheduler,
@@ -86,9 +83,10 @@ class FlowerClient(fl.client.NumPyClient):
 
         results = self.trainer.val_model()
 
-        avg_loss = results["val_loss"][-1]
-        val_iou = results["val_iou"][-1]
-
+        # avg_loss = results["val_loss"][-1]
+        # val_iou = results["val_iou"][-1]
+        avg_loss = 0
+        val_iou = 0
         return float(avg_loss), len(self.val_dataloader), {"Average IoU": val_iou}
 
 
@@ -96,8 +94,7 @@ def generate_client_fn(dataloaders: dict,
                         model: torch.nn.Module,
                         epochs: int,
                         criterion: torch.nn.Module,
-                        MeanDice: torch.nn.Module,
-                        MeanIoU: torch.nn.Module,
+                        metrics: torch.nn.Module,
                         optimizer: torch.optim.Optimizer,
                         scheduler: lr_scheduler._LRScheduler,
                         save_dir: str,
@@ -113,8 +110,7 @@ def generate_client_fn(dataloaders: dict,
             model = model,
             epochs = epochs,
             criterion = criterion,
-            MeanDice = MeanDice,
-            MeanIoU = MeanIoU,
+            metrics = metrics,
             optimizer = optimizer,
             scheduler = scheduler,
             save_dir = save_dir,

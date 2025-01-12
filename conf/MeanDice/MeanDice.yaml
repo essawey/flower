@@ -1,3 +1,0 @@
-_target_: Models.MeanDice
-smooth: ${smooth}
-num_classes: ${num_classes} 

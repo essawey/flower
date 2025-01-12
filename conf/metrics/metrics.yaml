@@ -1,0 +1,6 @@
+_target_: Models.Metrics
+mode: "multilabel"
+threshold: 0.5
+ignore_index: ${ignore_index}
+num_classes: ${num_classes}
+smooth: ${smooth}

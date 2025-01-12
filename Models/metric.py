@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import torch.nn.functional as F
 
 # Mean IoU metric
 class MeanIoU(nn.Module):
@@ -23,8 +24,8 @@ class MeanIoU(nn.Module):
             IoU_Score += self.IoU_coef(y_true[:,index,:,:], y_pred[:,index,:,:])
         return IoU_Score/self.num_classes
 
-    def forward(self, y_pred, y_true):
-        return self.Mean_IoU(y_pred, y_true)
+    def forward(self, outputs, targets):
+        return self.Mean_IoU(outputs, targets)
 
 # Mean Dice metric
 class MeanDice(nn.Module):
@@ -46,6 +47,79 @@ class MeanDice(nn.Module):
             Dice_Score += self.dice_coef(y_true[:,index,:,:], y_pred[:,index,:,:])
         return Dice_Score/self.num_classes
 
-    def forward(self, y_pred, y_true):
-        return self.Mean_Dice(y_pred, y_true)
+    def forward(self, outputs, targets):
+        return self.Mean_Dice(outputs, targets)
 
+
+from segmentation_models_pytorch import metrics 
+
+class Metrics(nn.Module):
+    # https://chatgpt.com/share/6783ade3-3008-8010-b47e-0a9c98293063
+    # reduction = weighted 
+    # 1. Looks at the entire dataset as a whole.
+    # 2. Assigns a weight to each class based on how many times it appears across all images.
+    # 3. Then calculates a single score for the dataset, ensuring rare classes have fair representation.
+
+    # reduction = weighted-imagewise
+    # 1. First looks at each image individually.
+    # 2. Within each image, assigns weights to classes based on their frequency within that specific image.
+    # 3. Then calculates a score for each image and averages these scores across all images.
+
+    # Beta > 1: Recall is given more weight than precision.
+    # Beta < 1: Precision is given more weight than recall.
+
+    def __init__(self, mode="multilabel", threshold=0.5, ignore_index = None, num_classes = None, smooth = None):
+        super().__init__()
+        self.mode = mode
+        self.threshold = threshold
+        self.ignore_index = ignore_index
+        self.num_classes = num_classes
+        self.smooth = smooth
+
+        self.class_weights = [
+            9.4507010467442780, # Neoplastic cells
+            56.859724293563640, # Inflammatory cells
+            26.286454373302785, # Connective/Soft tissue cells
+            1474.9347269860261, # Dead cells
+            39.952413962033800, # Epithelial cells
+            1.2302386418184008, # Background
+        ]
+        self.mean_iou = MeanIoU(smooth=self.smooth, num_classes=self.num_classes)
+        self.mean_dice = MeanDice(smooth=self.smooth, num_classes=self.num_classes)
+
+    def compute_stats(self, outputs, targets):
+        """Compute true positives, false positives, false negatives, and true negatives."""
+
+        targets = targets.int()
+        tp, fp, fn, tn = metrics.get_stats(outputs, targets, mode=self.mode, threshold=self.threshold, )
+        return tp, fp, fn, tn
+
+    def forward(self, outputs, targets):
+        """Compute all metrics and return as a dictionary."""
+
+        build_in_metrics = {
+        "mean_iou": self.mean_iou(outputs, targets).item(),
+        "mean_dice": self.mean_dice(outputs, targets).item(),
+        }
+
+        tp, fp, fn, tn = self.compute_stats(outputs, targets)
+
+        imported_metrics = {
+            "iou_score_globally": metrics.iou_score(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
+            "f1_score_globally": metrics.f1_score(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
+            "accuracy_globally": metrics.accuracy(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
+            "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
+            "recall_globally": metrics.recall(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
+            "f_precision_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted', class_weights=self.class_weights),
+            "f_recall_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted', class_weights=self.class_weights),
+
+            "iou_score_imagewise": metrics.iou_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
+            "f1_score_imagewise": metrics.f1_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
+            "accuracy_imagewise": metrics.accuracy(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
+            "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
+            "recall_imagewise": metrics.recall(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
+            "f_precision_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted-imagewise', class_weights=self.class_weights),
+            "f_recall_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted-imagewise', class_weights=self.class_weights),
+        }
+
+        return imported_metrics.update(build_in_metrics)
