@@ -105,21 +105,23 @@ class Metrics(nn.Module):
         tp, fp, fn, tn = self.compute_stats(outputs, targets)
 
         imported_metrics = {
-            "iou_score_globally": metrics.iou_score(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
-            "f1_score_globally": metrics.f1_score(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
-            "accuracy_globally": metrics.accuracy(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
-            "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
-            "recall_globally": metrics.recall(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights),
-            "f_precision_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted', class_weights=self.class_weights),
-            "f_recall_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted', class_weights=self.class_weights),
+            "iou_score_globally": metrics.iou_score(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
+            "f1_score_globally": metrics.f1_score(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
+            "accuracy_globally": metrics.accuracy(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
+            "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
+            "recall_globally": metrics.recall(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
+            "f_precision_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted', class_weights=self.class_weights).item(),
+            "f_recall_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted', class_weights=self.class_weights).item(),
 
-            "iou_score_imagewise": metrics.iou_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
-            "f1_score_imagewise": metrics.f1_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
-            "accuracy_imagewise": metrics.accuracy(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
-            "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
-            "recall_imagewise": metrics.recall(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights),
-            "f_precision_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted-imagewise', class_weights=self.class_weights),
-            "f_recall_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted-imagewise', class_weights=self.class_weights),
+            "iou_score_imagewise": metrics.iou_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            "f1_score_imagewise": metrics.f1_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            "accuracy_imagewise": metrics.accuracy(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            "recall_imagewise": metrics.recall(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            "f_precision_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            "f_recall_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
         }
+        imported_metrics.update(build_in_metrics)
 
-        return imported_metrics.update(build_in_metrics)
+        return imported_metrics
+

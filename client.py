@@ -67,27 +67,15 @@ class FlowerClient(fl.client.NumPyClient):
         
     def fit(self, parameters, config):
         self.set_parameters(parameters)
+        metrics_dict = self.trainer.train_model()
+        return self.get_parameters({}), len(self.train_dataloader), metrics_dict
 
-        results = self.trainer.train_model()
-
-        train_loss = results["train_loss"][-1]
-        train_iou = results["train_iou"][-1]
-        result_dict = {"Train Loss": train_loss,"train_iou": train_iou}
-        
-        return self.get_parameters({}), len(self.train_dataloader), result_dict
 
     def evaluate(self, parameters, config):
 
         self.set_parameters(parameters)
-
-
         results = self.trainer.val_model()
-
-        # avg_loss = results["val_loss"][-1]
-        # val_iou = results["val_iou"][-1]
-        avg_loss = 0
-        val_iou = 0
-        return float(avg_loss), len(self.val_dataloader), {"Average IoU": val_iou}
+        return results['loss'], len(self.val_dataloader), results
 
 
 def generate_client_fn(dataloaders: dict,

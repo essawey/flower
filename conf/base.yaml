@@ -1,12 +1,11 @@
 client_config:
-  local_epochs: 2
+  local_epochs: 5
   lr: 0.01
   step_size: 7
   gamma: 0.1
   save_dir: ./saved_models
 
-
-num_clients: 4
+num_clients: 2
 num_rounds: 2
 
 num_cpus: 2
@@ -14,7 +13,7 @@ num_gpus: 1
 
 num_clients_per_round_fit: ${num_clients}
 num_clients_per_round_eval: ${num_clients}
-batch_size: 3
+batch_size: 1
 
 smooth: 1.0        # Smooth term to avoid division by zero for all the losses and metrics
 ignore_index: null # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored

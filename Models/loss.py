@@ -30,10 +30,10 @@ class CombinedLoss(nn.Module):
 
     def get_losses(self, outputs, targets):
         return {
-            "CrossEntropyLoss": self.cross_entropy_loss(outputs, targets),
-            "DiceLoss": self.DiceLoss(outputs, targets),
-            "FocalLoss": self.FocalLoss(outputs, targets),
-            "LovaszLoss": self.LovaszLoss(outputs, targets),
+            "CrossEntropyLoss": self.cross_entropy_loss(outputs, targets).item(),
+            "DiceLoss": self.DiceLoss(outputs, targets).item(),
+            "FocalLoss": self.FocalLoss(outputs, targets).item(),
+            "LovaszLoss": self.LovaszLoss(outputs, targets).item(),
         }
     
     def forward(self, outputs, targets):

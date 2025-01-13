@@ -11,12 +11,13 @@ def main(cfg: DictConfig) -> None:
 
     ## 1. Parse config & get experiment output dir
     from omegaconf import OmegaConf
-    # print(OmegaConf.to_yaml(cfg))
+    str_config = OmegaConf.to_yaml(cfg)
+    # print(str_config)
 
     
     ## 2. Prepare your dataset
     criterion = instantiate(cfg.criterion)
-    print(criterion)
+
     # 2.2 Load the data
     dataloaders = instantiate(cfg.dataloaders)
 
@@ -33,7 +34,6 @@ def main(cfg: DictConfig) -> None:
     import torch
     model = instantiate(cfg.model)
     criterion = instantiate(cfg.criterion)
-
     metrics = instantiate(cfg.metrics)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -65,18 +65,19 @@ def main(cfg: DictConfig) -> None:
         strategy=strategy,
         client_resources={"num_cpus": cfg.num_cpus, "num_gpus": cfg.num_gpus},
     )
+    
     ## 6. Save the results
     from hydra.core.hydra_config import HydraConfig
-    import pickle
-    import os
-
     save_path = HydraConfig.get().runtime.output_dir
+
+    import os
     save_path = os.path.join(save_path, "results.json")
 
     results = {
         "history" : history
     }
 
+    import pickle
     with open(save_path, "wb") as file:
         pickle.dump(results, file , protocol=pickle.HIGHEST_PROTOCOL)
 

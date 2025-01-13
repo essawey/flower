@@ -13,7 +13,10 @@ def get_fit_metrics_aggregation_fn():
         A dictionary whose keys are all the metric names found among the input, and whose values
         are the weighted averages (weighted by the number of examples).
         """
-
+        from pprint import pprint
+        print(":"*45)
+        pprint(metrics)
+        print(":"*45)
         # 1. Collect all possible keys
         all_keys = set()
         for _, metric_dict in metrics:
