@@ -5,48 +5,49 @@ from collections import OrderedDict
 def get_fit_metrics_aggregation_fn():
     def weighted_average(metrics):
         """
-        metrics: A list of tuples where:
-        - The first element is the number of examples (int).
-        - The second element is a dictionary of arbitrary metrics, e.g. {"train_loss": 0.2, "val_accuracy": 0.8, ...}
+        Computes the weighted average of metrics across clients.
+
+        Args:
+        metrics: A list of tuples where each element represents the metrics from one client:
+            - The first element in the tuple is the number of examples (int).
+            - The second element is a dictionary of metrics where keys are metric names (str)
+              and values are lists of floats representing metrics over epochs.
 
         Returns:
-        A dictionary whose keys are all the metric names found among the input, and whose values
-        are the weighted averages (weighted by the number of examples).
+        A dictionary whose keys are all the metric names found among the input,
+        and whose values are the weighted averages of the metrics (weighted by the number of examples).
         """
-        from pprint import pprint
-        print(":"*45)
-        pprint(metrics)
-        print(":"*45)
-        # 1. Collect all possible keys
-        all_keys = set()
-        for _, metric_dict in metrics:
-            all_keys.update(metric_dict.keys())
-
-        # 2. Initialize accumulators for each key
-        weighted_sums = {key: 0.0 for key in all_keys}
+        # Initialize structures to store aggregated sums and weights
         total_examples = 0
+        aggregated_metrics = {}
 
-        # 3. Accumulate weighted sums
-        for num_examples, metric_dict in metrics:
+        # Iterate through each client's metrics
+        for num_examples, client_metrics in metrics:
             total_examples += num_examples
-            for key in all_keys:
-                # If a key is missing for a particular client, decide how you want to handle it:
-                # Option A: Treat missing as 0
-                value = metric_dict.get(key, 0.0)
-                # Option B: Skip if missing (would need more sophisticated logic)
+            for metric_name, metric_values in client_metrics.items():
 
-                weighted_sums[key] += num_examples * float(value)
+                # Use the last epoch value
 
-        # 4. Compute weighted averages
-        if total_examples == 0:
-            # Edge case: if total_examples is 0, return zeros or handle however appropriate
-            return {key: 0.0 for key in all_keys}
+                ## Training metrics are lists of floats
+                if type(metric_values) == list:
+                    last_value = metric_values[-1]
 
-        weighted_avgs = {
-            key: weighted_sums[key] / total_examples for key in all_keys
+                ## Validation metrics are floats
+                else:
+                    last_value = metric_values
+                
+                # Update the weighted sum for the metric
+                if metric_name not in aggregated_metrics:
+                    aggregated_metrics[metric_name] = 0
+                aggregated_metrics[metric_name] += num_examples * last_value
+
+        # Compute the final weighted averages
+        averaged_metrics = {
+            metric_name: aggregated_sum / total_examples
+            for metric_name, aggregated_sum in aggregated_metrics.items()
         }
 
-        return weighted_avgs
+        return averaged_metrics
 
     return weighted_average
 
