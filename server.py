@@ -1,6 +1,7 @@
 from omegaconf import DictConfig
 import torch
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
+from Models import Metrics
 
 def get_fit_metrics_aggregation_fn():
     def weighted_average(metrics):
@@ -69,22 +70,23 @@ def get_on_fit_config(cfg: DictConfig):
 
     return fit_config_fn
 
-def get_evaluate_fn(model, dataloader, criterion, MeanDice, MeanIoU):
+def get_evaluate_fn(model, dataloader, criterion, metrics):
 
     def evaluate_fn(server_round: int, parameters, config):
         
+
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         params_dict = zip(model.state_dict().keys(), parameters)
         state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})
-        
+        '''
         # model_state = model.state_dict()
         # for k in model_state.keys():
         #     if model_state[k].shape != state_dict[k].shape:
         #         print(f"Shape mismatch : Loacl Model {model_state[k]}, Server Model {state_dict[k]}")
         #         print(f"In layer {k}")
         #         print()
-                # '''
+
                 # Shape mismatch : Loacl Model 0, Server Model tensor([])
                 # In layer inc.double_conv.1.num_batches_tracked
 
@@ -120,8 +122,7 @@ def get_evaluate_fn(model, dataloader, criterion, MeanDice, MeanIoU):
 
                 # Shape mismatch : Loacl Model 0, Server Model tensor([])
                 # In layer up1.conv.double_conv.4.num_batches_tracked
-                # '''
-
+        '''
         for k, v in state_dict.items():
             # BatchNorm layers have a shape of torch.Size([0])
             # We need to convert them to torch.Size([1]) to load the model state dict
@@ -133,47 +134,36 @@ def get_evaluate_fn(model, dataloader, criterion, MeanDice, MeanIoU):
         model.to(device)
 
         model.eval() 
+        
+        metrics_list = defaultdict(list)
+        epoch_metrics = defaultdict(float)
+        num_batches = 0
+        with torch.no_grad():
+            for x, y in dataloader["Test"]:
+                inputs, targets = x.to(device), y.to(device)
 
-        running_dices, running_ious, running_losses, count = 0, 0, 0, 0
-
-        # Validation loop
-        for x, y in dataloader["Test"]:
-            # Send to device (GPU or CPU)
-            inputs = x.to(device)
-            targets = y.to(device)
-
-            with torch.no_grad():
                 outputs = model(inputs)
-                
-                # Calculate the loss
                 loss = criterion(outputs, targets)
-                loss_value = loss.item()
-                running_losses += loss_value
 
-                # Calculate the IoU
-                # iou = MeanIoU(outputs, targets)
-                # iou_value = iou.item()
-                # running_ious += iou_value
+                # Compute the metrics for the current batch
+                batch_metrics = metrics(outputs, targets)
+                batch_metrics.update(criterion.get_losses(outputs, targets))  # Add additional losses if any
+                batch_metrics["loss"] = loss.item()
 
-                # dice = MeanDice(outputs, targets)
-                # dice_value = dice.item()
-                # running_dices += dice_value
+                # Accumulate batch metrics
+                for key, value in batch_metrics.items():
+                    epoch_metrics[key] += value
+                num_batches += 1
 
-                count += 1
 
-        val_loss = running_losses / count
-        val_iou = running_ious / count
-        val_dice = running_dices / count
+            # Average metrics over all batches
+            for key in epoch_metrics.keys():
+                epoch_metrics[key] /= num_batches
 
-        print(
-            f'''
-            SERVER EVALUATION fn:
-            Validation loss: {val_loss:.3f}
-            Validation IoU: {val_iou:.3f}
-            Validation Dice: {val_dice:.3f}
-            '''
-        )
+            # Store epoch metrics for tracking
+            for key, value in epoch_metrics.items():
+                metrics_list[key].append(value)
 
-        return val_loss, {"Server Validation IoU" : val_iou, "Server Validation Dice" : val_dice}
+            return loss.item(), dict(epoch_metrics)
 
     return evaluate_fn

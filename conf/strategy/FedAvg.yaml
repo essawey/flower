@@ -11,12 +11,12 @@ on_fit_config_fn:
   _target_: server.get_on_fit_config
   cfg: ${client_config}
 
-# evaluate_fn:
-  # _target_: server.get_evaluate_fn
-  # model: ${model}
-  # dataloader: ${dataloaders}
-  # criterion: ${criterion}
-  # metrics: ${metrics}
+evaluate_fn:
+  _target_: server.get_evaluate_fn
+  model: ${model}
+  dataloader: ${dataloaders}
+  criterion: ${criterion}
+  metrics: ${metrics}
 
 fit_metrics_aggregation_fn:
   _target_: server.get_fit_metrics_aggregation_fn

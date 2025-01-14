@@ -101,7 +101,7 @@ class Trainer:
                 self.optimizer.step()
                 
                 # Perform a step of the learning rate scheduler
-                self.scheduler.step()
+                # self.scheduler.step()
 
                 # Compute metrics for the current batch
                 batch_metrics = self.metrics(outputs, targets)
