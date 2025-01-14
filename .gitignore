@@ -1,3 +1,5 @@
 outputs/*
 saved_models/*
 PanNuke/data/*
+
+git lfs track "*.psd"

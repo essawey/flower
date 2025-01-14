@@ -10,16 +10,16 @@ def download():
         import gdown
         id = "1-lyR2TY30Y-k_Tz1gs0RK8FzojMYedsN"
         gdown.download(id=id, output=zip_path)
-        print(f"File downloaded to: {zip_path}")
+        # print(f"File downloaded to: {zip_path}")
 
         import zipfile
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(target_path)
-        print(f"Files extracted to: {target_path}")
+        # print(f"Files extracted to: {target_path}")
 
         import transforms
         transforms.create_patches(target_path, 192, "Patched")
-        print(f"Patches created in: {os.path.join(target_path, 'Patched')}")
+        # print(f"Patches created in: {os.path.join(target_path, 'Patched')}")
 
         import os
         import shutil
@@ -47,6 +47,4 @@ def download():
         shutil.move(src, dst)
 
 
-print("Downloading PanNuke")
 download()
-print("PanNuke downloaded")
