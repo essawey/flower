@@ -74,7 +74,6 @@ def getMeansAndStds():
     return means.tolist(), stds.tolist()
 
 
-
 def class_weights():
     mask_dir = os.path.join(os.getcwd(), 'PanNuke', 'data', 'Patched', 'Train', '**', '*.npy')
     mask_file_list = glob.glob(mask_dir, recursive=True)
@@ -102,5 +101,4 @@ def class_weights():
 
     return class_weights
 
-# # Call the function and print the computed class weights
 # weights = class_weights()
