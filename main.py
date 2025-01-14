@@ -21,7 +21,7 @@ def main(cfg: DictConfig) -> None:
     # 2.2 Load the data
     dataloaders = instantiate(cfg.dataloaders)
 
-    ## 3. Define your clients
+    ## 3. Define your clients ##
 
     # 3.1 Configarations
     epochs = cfg.client_config.local_epochs
