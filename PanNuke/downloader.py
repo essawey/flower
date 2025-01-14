@@ -1,26 +1,52 @@
 def download():
     import os
     if not os.path.exists(os.path.join(os.getcwd(), 'PanNuke', 'data', 'PanNuke.zip')):
-        import subprocess
 
         target_path = os.path.join(os.getcwd(),"PanNuke", "data")
-        zip_path = os.path.join(target_path, "PanNuke.zip")
 
+        zip_path = os.path.join(target_path, "PanNuke.zip")
         os.makedirs(target_path, exist_ok=True)
 
-        # subprocess.run(["gdown", "-q", "1vVLVUV4hMDovRpItYnogh6cwcfb1xOo5", "-O", zip_path])
+        import gdown
+        id = "1-lyR2TY30Y-k_Tz1gs0RK8FzojMYedsN"
+        gdown.download(id=id, output=zip_path)
+        print(f"File downloaded to: {zip_path}")
 
-        
-        subprocess.run(["unzip", "-q", zip_path, "-d", target_path])
+        import zipfile
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(target_path)
+        print(f"Files extracted to: {target_path}")
 
-        from PanNuke import transforms
+        import transforms
         transforms.create_patches(target_path, 192, "Patched")
-        
-        subprocess.run(["mv", os.path.join(os.getcwd(), "Patched", "PanNuke"),  os.path.join(os.getcwd(), "Patched", "Patched")])
-        subprocess.run(["mv", os.path.join(os.getcwd(), "Patched", "Patched"), os.path.join(os.getcwd(), "PanNuke", 'data')])
-        subprocess.run(["rmdir", os.path.join(os.getcwd(), "Patched")])
-        subprocess.run(["mv", os.path.join(target_path, "PanNuke"), os.path.join(target_path, "Original")])
+        print(f"Patches created in: {os.path.join(target_path, 'Patched')}")
 
-# print("Downloading PanNuke")
+        import os
+        import shutil
+
+        # Define the current working directory
+        current_dir = os.getcwd()
+
+        # Move "Patched/PanNuke" to "Patched/Patched"
+        src = os.path.join(current_dir, "Patched", "PanNuke")
+        dst = os.path.join(current_dir, "Patched", "Patched")
+        shutil.move(src, dst)
+
+        # Move "Patched/Patched" to "PanNuke/data"
+        src = os.path.join(current_dir, "Patched", "Patched")
+        dst = os.path.join(current_dir, "PanNuke", "data")
+        shutil.move(src, dst)
+
+        # Remove the "Patched" directory
+        patched_dir = os.path.join(current_dir, "Patched")
+        os.rmdir(patched_dir)
+
+        # Move "PanNuke" to "Original" in the target path
+        src = os.path.join(target_path, "PanNuke")
+        dst = os.path.join(target_path, "Original")
+        shutil.move(src, dst)
+
+
+print("Downloading PanNuke")
 download()
-# print("PanNuke downloaded")
+print("PanNuke downloaded")
