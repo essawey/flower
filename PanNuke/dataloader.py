@@ -1,7 +1,7 @@
 # pannuke/dataloader.py
 from torch.utils.data import DataLoader
 from .dataset import SemanticSegmentationDataset, getMeansAndStds
-# from .transforms import get_data_augmentation
+from .transforms import get_data_augmentation
 import pandas as pd
 import glob
 import os
@@ -42,24 +42,24 @@ def load_data(batch_size):
     server_test_df = df[df['split'].str.contains("Test")]
 
     # Data augmentation transforms
-    # means, stds = getMeansAndStds()
-    # data_augmentation = get_data_augmentation(means, stds)
+    means, stds = getMeansAndStds()
+    data_augmentation = get_data_augmentation(means, stds)
 
     # Define datasets for Train, Validation, and Test
     image_datasets = {
         'Train': {
-            0: SemanticSegmentationDataset(df=train_client_0_df),# transform=data_augmentation['Train']),
-            1: SemanticSegmentationDataset(df=train_client_1_df),# transform=data_augmentation['Train']),
-            2: SemanticSegmentationDataset(df=train_client_2_df),# transform=data_augmentation['Train']),
-            3: SemanticSegmentationDataset(df=train_client_3_df),# transform=data_augmentation['Train']),
+            0: SemanticSegmentationDataset(df=train_client_0_df, transform=data_augmentation['Train']),
+            1: SemanticSegmentationDataset(df=train_client_1_df, transform=data_augmentation['Train']),
+            2: SemanticSegmentationDataset(df=train_client_2_df, transform=data_augmentation['Train']),
+            3: SemanticSegmentationDataset(df=train_client_3_df, transform=data_augmentation['Train']),
         },
         'Validation': {
-            0: SemanticSegmentationDataset(df=val_client_0_df),# transform=data_augmentation['Validation']),
-            1: SemanticSegmentationDataset(df=val_client_1_df),# transform=data_augmentation['Validation']),
-            2: SemanticSegmentationDataset(df=val_client_2_df),# transform=data_augmentation['Validation']),
-            3: SemanticSegmentationDataset(df=val_client_3_df),# transform=data_augmentation['Validation']),
+            0: SemanticSegmentationDataset(df=val_client_0_df, transform=data_augmentation['Validation']),
+            1: SemanticSegmentationDataset(df=val_client_1_df, transform=data_augmentation['Validation']),
+            2: SemanticSegmentationDataset(df=val_client_2_df, transform=data_augmentation['Validation']),
+            3: SemanticSegmentationDataset(df=val_client_3_df, transform=data_augmentation['Validation']),
         },
-        'Test': SemanticSegmentationDataset(df=server_test_df),# transform=data_augmentation['Test'])
+        'Test': SemanticSegmentationDataset(df=server_test_df, transform=data_augmentation['Test'])
     }
 
     # Create DataLoaders for clients

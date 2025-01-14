@@ -15,4 +15,4 @@ subprocess.run("pip install matplotlib==3.9.4", shell=True)
 subprocess.run("pip install opencv-contrib-python==4.10.0.84", shell=True)
 subprocess.run("pip install pandas==2.2.3", shell=True)
 subprocess.run("pip install Jinja2==3.1.5", shell=True)
-
+subprocess.run("pip install albumentations==1.3.0", shell=True)

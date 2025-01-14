@@ -1,8 +1,7 @@
 # pannuke/transforms.py
 import os
-# import albumentations as A
+import albumentations as A
 from pathlib import Path
-from torchvision.transforms import functional
 from torchvision import transforms
 
 from PIL import Image
@@ -10,25 +9,25 @@ import cv2
 import math
 import numpy as np
 
-# def get_data_augmentation(means, stds):
-#     """Returns data augmentation pipelines for training, validation, and testing."""
+def get_data_augmentation(means, stds):
+    """Returns data augmentation pipelines for training, validation, and testing."""
     
-#     data_augmentation = {
-#         'Train': A.Compose([
-#             A.HorizontalFlip(p=0.5),
-#             A.VerticalFlip(p=0.5),
-#             A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, rotate_limit=30, p=0.5),
-#             A.Normalize(mean=means, std=stds),
-#         ]),
-#         'Validation': A.Compose([
-#             A.Normalize(mean=means, std=stds),
-#         ]),
-#         'Test': A.Compose([
-#             A.Normalize(mean=means, std=stds),
-#         ]),
-#     }
+    data_augmentation = {
+        'Train': A.Compose([
+            A.HorizontalFlip(p=0.5),
+            A.VerticalFlip(p=0.5),
+            A.ShiftScaleRotate(shift_limit=0.2, scale_limit=0.2, rotate_limit=30, p=0.5),
+            A.Normalize(mean=means, std=stds),
+        ]),
+        'Validation': A.Compose([
+            A.Normalize(mean=means, std=stds),
+        ]),
+        'Test': A.Compose([
+            A.Normalize(mean=means, std=stds),
+        ]),
+    }
 
-#     return data_augmentation
+    return data_augmentation
 
 def create_patches(image_dir, patch_size, target_dir):
     for path, _, _ in sorted(os.walk(image_dir)):
