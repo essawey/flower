@@ -67,8 +67,6 @@ def main(cfg: DictConfig) -> None:
     )
     
     ## 6. Save the results
-
-
     def make_serializable(obj):
         if isinstance(obj, dict):
             return {key: make_serializable(value) for key, value in obj.items()}
@@ -80,8 +78,6 @@ def main(cfg: DictConfig) -> None:
             return make_serializable(obj.__dict__)
         else:
             return obj
-
-
     def save_as_json(data):
 
         from hydra.core.hydra_config import HydraConfig
@@ -96,7 +92,6 @@ def main(cfg: DictConfig) -> None:
         import json
         with open(save_path, 'w') as json_file:
             json.dump(data, json_file, indent=4, )
-
     save_as_json({"history": history})
 
 

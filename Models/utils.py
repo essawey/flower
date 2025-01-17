@@ -2,45 +2,43 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from pathlib import Path
-import re
 import os
 
+def get_current_round_path(filename: str, save_dir: str):
+    os.makedirs(save_dir, exist_ok=True)
 
-# Save the model to the target dir
-def save_model(model: torch.nn.Module, target_dir: str, client_id: str):
-    """
-    Saves a PyTorch model to a target directory.
-    """
-    # Create target directory and model save path
-    target_dir_path = Path(target_dir)
-    target_dir_path.mkdir(parents=True, exist_ok=True)
+    base_name, ext = os.path.splitext(filename)
+    counter = 1
+    new_filename = filename
+
+    # Update the filename to match the current round number
+    while os.path.exists(os.path.join(save_dir, new_filename)):
+        new_filename = f"{base_name}({counter}){ext}"
+        counter += 1
+    
+    return os.path.join(save_dir, new_filename)
 
 
-    # only call this code if the path exists
-    folders = [folder for folder in os.listdir(target_dir) if os.path.isdir(os.path.join(target_dir, folder))]
-    roundsSaved = [int(re.search(r'\d', text).group()) if re.search(r'\d', text) else 1 for text in folders] + [1]
+def save_model(model: torch.nn.Module, save_dir: str, client_id: str):
+    # Base model name: round 1, client 1, last epoch
+    model_path = get_current_round_path(f"model_round_{1}_client_{client_id}", save_dir)
+    model.save_pretrained(save_directory=model_path, push_to_hub=False)
 
-    if os.path.exists(os.path.join(target_dir, f"model_round_{1}_client_{client_id}")):
-        current_round = max(roundsSaved) + 1
-    else:
-        current_round = max(roundsSaved)
-    model_save_path = target_dir_path / f"model_round_{current_round}_client_{client_id}"
-
-    # Save the model using segmentation_models_pytorch utility
-    model.save_pretrained(save_directory=model_save_path, push_to_hub=False)
 
 # Plot the training curve
-def plot_curve(results: dict, epochs: int):
+from typing import Dict, List
 
-    train_ious = np.array(results["train_iou"])
-    train_dices = np.array(results["train_dice"])
-    train_losses = np.array(results["train_loss"])
+def plot_curve(metrics_list: Dict[str, List[float]], save_dir, client_id, epoch):
+    
+    plt.figure(figsize=(12, 8))
+    for key, values in metrics_list.items():
+        plt.plot(np.arange(0, epoch, 1), values, label=key)
+    plt.xlabel("Epochs")
+    plt.ylabel("Metric Value")
+    plt.title("Training Metrics Over Epochs")
+    plt.legend()
+    plt.grid(True)
 
-    plt.plot(np.arange(0, epochs, 1), train_losses, label='Train loss')
-    plt.plot(np.arange(0, epochs, 1), train_ious, label='Train IoU')
-    plt.plot(np.arange(0, epochs, 1), train_dices, label='Train Dice')
+    plot_path = get_current_round_path(f"plot_round_{1}_client_{client_id}", save_dir)
 
-    plt.xlabel('Epoch')
-    plt.legend(loc='upper right')
-    plt.savefig("FIXME.png")
+    plt.savefig(f"{plot_path}.png")
