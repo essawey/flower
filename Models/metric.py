@@ -9,7 +9,7 @@ class MeanIoU(nn.Module):
         self.smooth = smooth
         self.num_classes = num_classes
 
-    def IoU_coef(self, y_pred, y_true):
+    def IoU_coef(self, y_pred, y_true): 
 
         y_true_f = y_true.flatten()
         y_pred_f = y_pred.flatten()

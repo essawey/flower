@@ -36,7 +36,6 @@ class MLP(nn.Module):
         x = x.transpose(1, 2).reshape(batch, -1, height, width)
         return x
 
-
 class SegformerDecoder(nn.Module):
     def __init__(
         self,
@@ -88,7 +87,6 @@ class SegformerDecoder(nn.Module):
         output = self.fuse_stage(torch.cat(resized_features, dim=1))
 
         return output
-
 
 class Segformer(SegmentationModel):
     """Segformer is simple and efficient design for semantic segmentation with Transformers

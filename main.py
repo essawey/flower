@@ -67,19 +67,38 @@ def main(cfg: DictConfig) -> None:
     )
     
     ## 6. Save the results
-    from hydra.core.hydra_config import HydraConfig
-    save_path = HydraConfig.get().runtime.output_dir
 
-    import os
-    save_path = os.path.join(save_path, "results.json")
 
-    results = {
-        "history" : history
-    }
+    def make_serializable(obj):
+        if isinstance(obj, dict):
+            return {key: make_serializable(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [make_serializable(item) for item in obj]
+        elif isinstance(obj, float) and obj == float('inf'):
+            return 'Infinity'
+        elif hasattr(obj, '__dict__'):
+            return make_serializable(obj.__dict__)
+        else:
+            return obj
 
-    import pickle
-    with open(save_path, "wb") as file:
-        pickle.dump(results, file , protocol=pickle.HIGHEST_PROTOCOL)
+
+    def save_as_json(data):
+
+        from hydra.core.hydra_config import HydraConfig
+        save_path = HydraConfig.get().runtime.output_dir
+
+        import os
+        save_path = os.path.join(save_path, "results.json")
+
+        
+        data = make_serializable(data)
+        
+        import json
+        with open(save_path, 'w') as json_file:
+            json.dump(data, json_file, indent=4, )
+
+    save_as_json({"history": history})
+
 
 if __name__ == "__main__":
     main()
