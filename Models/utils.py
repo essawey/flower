@@ -41,3 +41,5 @@ def plot_curve(metrics_list: Dict[str, List[float]], save_dir, client_id):
     plot_path = get_current_round_path(f"plot_round_{1}_client_{client_id}", save_dir)
 
     plt.savefig(f"{plot_path}.png")
+
+
