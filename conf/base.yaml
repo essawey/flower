@@ -5,8 +5,8 @@ client_config:
   gamma: 0.1
   save_dir: ./saved_models
 
-num_clients: 2
-num_rounds: 1
+num_clients: 1
+num_rounds: 3
 
 num_cpus: 2
 num_gpus: 1

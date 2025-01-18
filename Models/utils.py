@@ -1,6 +1,5 @@
 
 import torch
-import numpy as np
 import matplotlib.pyplot as plt
 import os
 
@@ -28,11 +27,11 @@ def save_model(model: torch.nn.Module, save_dir: str, client_id: str):
 # Plot the training curve
 from typing import Dict, List
 
-def plot_curve(metrics_list: Dict[str, List[float]], save_dir, client_id, epoch):
+def plot_curve(metrics_list: Dict[str, List[float]], save_dir, client_id):
     
     plt.figure(figsize=(12, 8))
     for key, values in metrics_list.items():
-        plt.plot(np.arange(0, epoch, 1), values, label=key)
+        plt.plot(values, label=key)
     plt.xlabel("Epochs")
     plt.ylabel("Metric Value")
     plt.title("Training Metrics Over Epochs")

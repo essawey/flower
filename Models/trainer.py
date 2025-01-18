@@ -130,12 +130,12 @@ class Trainer:
             )
 
             # Save model checkpoint
-            plot_curve(metrics_list, self.save_dir, self.client_id, self.epoch)
 
         # Training complete
         time_elapsed = time.time() - start_time
         print(f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s")
         save_model(self.model, self.save_dir, self.client_id)
+        plot_curve(metrics_list, self.save_dir, self.client_id)
 
         
         return dict(metrics_list)
