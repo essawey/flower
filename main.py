@@ -55,7 +55,6 @@ def main(cfg: DictConfig) -> None:
     ## 4. Define the strategy
     strategy = instantiate(cfg.strategy)
 
-
     ## 5. Start Simulation
     import flwr as fl
     history = fl.simulation.start_simulation(
@@ -94,6 +93,14 @@ def main(cfg: DictConfig) -> None:
             json.dump(data, json_file, indent=4, )
     save_as_json({"history": history})
 
+    import wandb
+    wandb.finish()
 
 if __name__ == "__main__":
-    main()
+    import wandb
+    wandb.init(project="flwr", name=f"flwr_{0}")
+    wandb.init(project="flwr", name=f"flwr_{1}")
+    wandb.init(project="flwr", name=f"flwr_{2}")
+    wandb.init(project="flwr", name=f"flwr_{3}")
+
+    main()  

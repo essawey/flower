@@ -1,8 +1,7 @@
+from collections import OrderedDict, defaultdict
 from omegaconf import DictConfig
 import torch
-from collections import OrderedDict, defaultdict
-from Models import Metrics
-
+import wandb
 def get_fit_metrics_aggregation_fn():
     def weighted_average(metrics):
         """
@@ -56,17 +55,13 @@ def get_fit_metrics_aggregation_fn():
 def get_on_fit_config(cfg: DictConfig):
 
     def fit_config_fn(server_round: int):
-        
+        wandb.log({"round": server_round})
         if server_round > 2:
             pass
             #FIXME: Implement a learning rate scheduler for server rounds
-        return {
-            'lr': cfg.lr,
-            "local_epochs": cfg.local_epochs,
-            "step_size": cfg.step_size,
-            "gamma": cfg.gamma,
-        }
-    
+
+        cfg.update({"current_round": server_round})
+        return cfg
 
     return fit_config_fn
 

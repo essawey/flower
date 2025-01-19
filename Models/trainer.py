@@ -5,16 +5,18 @@ import torch
 from torch.utils.data import DataLoader
 from torch.optim import lr_scheduler
 from tqdm import trange
+import wandb
 from .utils import save_model, plot_curve
 
 import warnings
-
 warnings.filterwarnings("ignore", message="Seems like `optimizer.step()` has been overridden after learning rate scheduler initialization")
+
+
 
 
 class Trainer:
     """
-    A generic training class for PyTorch models.
+    A generic training class for PyTorch models with wandb integration for federated learning.
     """
 
     def __init__(
@@ -60,13 +62,18 @@ class Trainer:
         self.client_id = client_id
         self.epoch = 0  # To track the current epoch during training
 
-    def train_model(self) -> Dict[str, List[float]]:
+
+    def train_model(self, config) -> Dict[str, List[float]]:
         """
         Train the model for the specified number of epochs.
 
         Returns:
             A dictionary containing metrics tracked during training.
         """
+        print("=======================> Training model    " + self.client_id)
+        print(config)
+        # wandb.watch(self.model, log="all", log_freq=10)
+
         # Initialize a dictionary to store metrics, using defaultdict for convenience
         metrics_list = defaultdict(list)
 
@@ -99,9 +106,6 @@ class Trainer:
                 # Backward pass and parameter update
                 loss.backward()
                 self.optimizer.step()
-                
-                # Perform a step of the learning rate scheduler
-                # self.scheduler.step()
 
                 # Compute metrics for the current batch
                 batch_metrics = self.metrics(outputs, targets)
@@ -113,23 +117,19 @@ class Trainer:
                     epoch_metrics[key] += value
                 num_batches += 1
 
-
             # Average metrics over all batches
             for key in epoch_metrics.keys():
                 epoch_metrics[key] /= num_batches
-
             # Store epoch metrics for tracking
             for key, value in epoch_metrics.items():
                 metrics_list[key].append(value)
 
-            
+            # wandb.log(metrics_list)
             progressbar.set_description(
                 f'''
                 Client {self.client_id} | Epoch {self.epoch} | Loss: {epoch_metrics['loss']:.3f} | IoU: {epoch_metrics.get('iou_score_globally'):.3f}
                 '''
             )
-
-            # Save model checkpoint
 
         # Training complete
         time_elapsed = time.time() - start_time
@@ -137,9 +137,7 @@ class Trainer:
         save_model(self.model, self.save_dir, self.client_id)
         plot_curve(metrics_list, self.save_dir, self.client_id)
 
-        
         return dict(metrics_list)
-
 
     def val_model(self) -> Dict[str, List[float]]:
         """
@@ -148,9 +146,10 @@ class Trainer:
         self.model.to(self.device)
         self.model.eval()  # Set the model to evaluation mode
         
-        metrics_list = defaultdict(list)  # Initialize the dictionary to store validation metrics
-        epoch_metrics = defaultdict(float)  # Metrics accumulator for the current epoch
+
+        metrics_list = defaultdict(float)
         num_batches = 0  # To calculate batch-wise average metrics
+
 
         # Disable gradient computation during validation to save memory and computation
         with torch.no_grad():
@@ -166,20 +165,17 @@ class Trainer:
 
                 # Compute the metrics for the current batch
                 batch_metrics = self.metrics(outputs, targets)
-                batch_metrics.update(self.criterion.get_losses(outputs, targets))  # Add additional losses if any
+                batch_metrics.update(self.criterion.get_losses(outputs, targets))
                 batch_metrics["loss"] = loss.item()
 
                 # Accumulate batch metrics
                 for key, value in batch_metrics.items():
-                    epoch_metrics[key] += value
+                    metrics_list[key] += value
                 num_batches += 1
 
         # Average metrics over all batches
-        for key in epoch_metrics.keys():
-            epoch_metrics[key] /= num_batches
+        for key in metrics_list.keys():
+            metrics_list[key] /= num_batches
 
-        # Store epoch metrics for tracking
-        for key, value in epoch_metrics.items():
-            metrics_list[key].append(value)
 
-        return dict(epoch_metrics)
+        return dict(metrics_list)

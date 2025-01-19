@@ -4,7 +4,7 @@ import torch
 import flwr as fl
 from torch.utils.data import DataLoader
 import torch.optim.lr_scheduler as lr_scheduler
-
+import wandb
 class FlowerClient(fl.client.NumPyClient):
     def __init__(self, 
                 train_dataloader: DataLoader,
@@ -61,17 +61,26 @@ class FlowerClient(fl.client.NumPyClient):
         self.model.load_state_dict(state_dict)
 
     def get_parameters(self, config):
-
+        print("get_parameters")
+        print("8"*10)
+        print(f"{config = }")
+        current_round = config.get("current_round", 0)
+        print(f"{current_round = }")  
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
         
     def fit(self, parameters, config):
         self.set_parameters(parameters)
-        metrics_dict = self.trainer.train_model()
-        return self.get_parameters({}), len(self.train_dataloader), metrics_dict
+        metrics_dict = self.trainer.train_model(config)
+        return self.get_parameters(config), len(self.train_dataloader), metrics_dict
 
 
     def evaluate(self, parameters, config):
+        print("evaluate")
+        print("*"*10)
+        print(f"{config = }")
+        current_round = config.get("current_round", 0)
+        print(f"{current_round = }")  
 
         self.set_parameters(parameters)
         results = self.trainer.val_model()
@@ -88,10 +97,12 @@ def generate_client_fn(dataloaders: dict,
                         save_dir: str,
                         ):
 
-    train_dataloader = dataloaders['Train']
-    val_dataloader = dataloaders['Validation']
-
     def client_fn(cid: str):
+        
+        train_dataloader = dataloaders['Train']
+        val_dataloader = dataloaders['Validation']
+
+
         return FlowerClient(
             train_dataloader = train_dataloader[int(cid)],
             val_dataloader = val_dataloader[int(cid)],
