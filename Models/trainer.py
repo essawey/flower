@@ -70,9 +70,15 @@ class Trainer:
         Returns:
             A dictionary containing metrics tracked during training.
         """
+
+        import wandb
+        run_name = f"flwr_{config.get('current_round')}:{self.client_id}"
+
+        wandb.init(project="20_1_test", name=run_name)
+        
+
         print("=======================> Training model    " + self.client_id)
         print(config)
-        # wandb.watch(self.model, log="all", log_freq=10)
 
         # Initialize a dictionary to store metrics, using defaultdict for convenience
         metrics_list = defaultdict(list)
@@ -86,7 +92,7 @@ class Trainer:
         for _ in progressbar:
             self.epoch += 1  # Increment epoch counter
             self.model.train()  # Set the model to training mode
-
+            wandb.watch(self.model, log="all", log_freq=10)
             epoch_metrics = defaultdict(float)  # Metrics accumulator for the current epoch
             num_batches = 0  # To calculate batch-wise average metrics
 

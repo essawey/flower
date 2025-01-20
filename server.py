@@ -55,7 +55,7 @@ def get_fit_metrics_aggregation_fn():
 def get_on_fit_config(cfg: DictConfig):
 
     def fit_config_fn(server_round: int):
-        wandb.log({"round": server_round})
+
         if server_round > 2:
             pass
             #FIXME: Implement a learning rate scheduler for server rounds

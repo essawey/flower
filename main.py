@@ -97,10 +97,5 @@ def main(cfg: DictConfig) -> None:
     wandb.finish()
 
 if __name__ == "__main__":
-    import wandb
-    wandb.init(project="flwr", name=f"flwr_{0}")
-    wandb.init(project="flwr", name=f"flwr_{1}")
-    wandb.init(project="flwr", name=f"flwr_{2}")
-    wandb.init(project="flwr", name=f"flwr_{3}")
 
     main()  
