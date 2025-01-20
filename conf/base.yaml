@@ -8,7 +8,7 @@ client_config:
 num_clients: 4
 num_rounds: 3
 
-num_cpus: 2
+num_cpus: 8
 num_gpus: 1
 
 num_clients_per_round_fit: ${num_clients}

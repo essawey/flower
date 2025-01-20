@@ -61,11 +61,6 @@ class FlowerClient(fl.client.NumPyClient):
         self.model.load_state_dict(state_dict)
 
     def get_parameters(self, config):
-        print("get_parameters")
-        print("8"*10)
-        print(f"{config = }")
-        current_round = config.get("current_round", 0)
-        print(f"{current_round = }")  
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
         
@@ -76,11 +71,10 @@ class FlowerClient(fl.client.NumPyClient):
 
 
     def evaluate(self, parameters, config):
-        print("evaluate")
-        print("*"*10)
-        print(f"{config = }")
+
+
         current_round = config.get("current_round", 0)
-        print(f"{current_round = }")  
+
 
         self.set_parameters(parameters)
         results = self.trainer.val_model()

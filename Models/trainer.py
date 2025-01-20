@@ -7,6 +7,7 @@ from torch.optim import lr_scheduler
 from tqdm import trange
 import wandb
 from .utils import save_model, plot_curve
+from omegaconf import OmegaConf
 
 import warnings
 warnings.filterwarnings("ignore", message="Seems like `optimizer.step()` has been overridden after learning rate scheduler initialization")
@@ -72,13 +73,18 @@ class Trainer:
         """
 
         import wandb
-        run_name = f"flwr_{config.get('current_round')}:{self.client_id}"
+        current_round = config.get('current_round', -1)
+        client_id = self.client_id
+        run_name = fr"round_{current_round}_client_{client_id}"
 
-        wandb.init(project="20_1_test", name=run_name)
-        
+        config = OmegaConf.to_container(config, resolve=True)
 
-        print("=======================> Training model    " + self.client_id)
-        print(config)
+        wandb.init(name=run_name, config=config)
+
+
+        wandb.log({"Round": int(current_round), "Client": int(client_id)})
+
+
 
         # Initialize a dictionary to store metrics, using defaultdict for convenience
         metrics_list = defaultdict(list)
@@ -123,14 +129,16 @@ class Trainer:
                     epoch_metrics[key] += value
                 num_batches += 1
 
+            
+            wandb.log({"epoch": self.epoch})
             # Average metrics over all batches
             for key in epoch_metrics.keys():
                 epoch_metrics[key] /= num_batches
             # Store epoch metrics for tracking
             for key, value in epoch_metrics.items():
+                wandb.log({key: value})
                 metrics_list[key].append(value)
 
-            # wandb.log(metrics_list)
             progressbar.set_description(
                 f'''
                 Client {self.client_id} | Epoch {self.epoch} | Loss: {epoch_metrics['loss']:.3f} | IoU: {epoch_metrics.get('iou_score_globally'):.3f}
@@ -142,7 +150,7 @@ class Trainer:
         print(f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s")
         save_model(self.model, self.save_dir, self.client_id)
         plot_curve(metrics_list, self.save_dir, self.client_id)
-
+        wandb.finish()
         return dict(metrics_list)
 
     def val_model(self) -> Dict[str, List[float]]:

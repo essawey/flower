@@ -77,8 +77,8 @@ def main(cfg: DictConfig) -> None:
             return make_serializable(obj.__dict__)
         else:
             return obj
-    def save_as_json(data):
 
+    def save_as_json(data):
         from hydra.core.hydra_config import HydraConfig
         save_path = HydraConfig.get().runtime.output_dir
 
