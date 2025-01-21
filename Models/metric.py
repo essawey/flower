@@ -68,7 +68,7 @@ class Metrics(nn.Module):
     # Beta > 1: Recall is given more weight than precision.
     # Beta < 1: Precision is given more weight than recall.
 
-    def __init__(self, mode="multilabel", threshold=0.5, ignore_index = None, num_classes = None, smooth = None):
+    def __init__(self, mode, threshold, ignore_index, num_classes, smooth):
         super().__init__()
         self.mode = mode
         self.threshold = threshold
@@ -91,7 +91,7 @@ class Metrics(nn.Module):
         """Compute true positives, false positives, false negatives, and true negatives."""
 
         targets = targets.int()
-        tp, fp, fn, tn = metrics.get_stats(outputs, targets, mode=self.mode, threshold=self.threshold, )
+        tp, fp, fn, tn = metrics.get_stats(outputs, targets, mode=self.mode, threshold=self.threshold, ignore_index = self.ignore_index)
         return tp, fp, fn, tn
 
     def forward(self, outputs, targets):

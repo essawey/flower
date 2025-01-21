@@ -4,7 +4,7 @@ from hydra.utils import instantiate
 
 import hydra
 @hydra.main(config_path="conf", config_name="base", version_base=None)
-def main(cfg: DictConfig) -> None:
+def main(cfg: DictConfig):
 
     import shutil
     shutil.rmtree("saved_models", ignore_errors=True)
@@ -97,5 +97,4 @@ def main(cfg: DictConfig) -> None:
     wandb.finish()
 
 if __name__ == "__main__":
-
-    main()  
+    main()

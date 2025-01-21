@@ -3,3 +3,8 @@ config:
   DiceLoss: ${DiceLoss}
   FocalLoss: ${FocalLoss}
   LovaszLoss: ${LovaszLoss}
+mode: multilabel
+from_logits: true
+smooth: ${smooth}
+ignore_index: ${ignore_index}
+log_loss: ${log_loss}

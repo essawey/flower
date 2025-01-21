@@ -14,7 +14,7 @@ class CategoricalCrossEntropyLoss(nn.Module):
 
 
 class CombinedLoss(nn.Module):
-    def __init__(self, config: DictConfig, mode=None, from_logits=None, smooth=None, ignore_index=None, log_loss=None):
+    def __init__(self, config: DictConfig, mode: str, from_logits: bool, smooth: int, ignore_index: int, log_loss: bool):
         super().__init__()
         self.config = config
         self.mode = mode
