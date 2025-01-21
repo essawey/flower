@@ -17,7 +17,7 @@ batch_size: 1
 
 # Losses configuration
 smooth: 1.0        # Smooth term to avoid division by zero for all the losses and metrics
-ignore_index: -1 # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
+ignore_index: 5   # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
 log_loss: false    # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
 
 # LovaszLoss

@@ -5,14 +5,16 @@ from hydra.utils import instantiate
 import hydra
 @hydra.main(config_path="conf", config_name="base", version_base=None)
 def main(cfg: DictConfig):
+    import os
+    os.environ["WANDB_SILENT"] = "true"
 
     import shutil
     shutil.rmtree("saved_models", ignore_errors=True)
 
     ## 1. Parse config & get experiment output dir
     from omegaconf import OmegaConf
-    str_config = OmegaConf.to_yaml(cfg)
-    # print(str_config)
+    yaml_config = OmegaConf.to_yaml(cfg)
+    # print(yaml_config)
 
     
     ## 2. Prepare your dataset

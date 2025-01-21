@@ -89,9 +89,17 @@ class Metrics(nn.Module):
 
     def compute_stats(self, outputs, targets):
         """Compute true positives, false positives, false negatives, and true negatives."""
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+        targets = targets.to(device)
+        outputs = outputs.to(device)
+
+        targets = torch.argmax(targets, dim=1)
+        outputs = torch.argmax(outputs, dim=1)
 
         targets = targets.int()
-        tp, fp, fn, tn = metrics.get_stats(outputs, targets, mode=self.mode, threshold=self.threshold, ignore_index = self.ignore_index)
+        targets = torch.where(targets == self.ignore_index, torch.tensor(-1, device=device), targets)
+        tp, fp, fn, tn = metrics.get_stats(outputs, targets, mode="multiclass", ignore_index=-1, num_classes = self.num_classes)
         return tp, fp, fn, tn
 
     def forward(self, outputs, targets):
@@ -107,7 +115,7 @@ class Metrics(nn.Module):
         imported_metrics = {
             "iou_score_globally": metrics.iou_score(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
             "f1_score_globally": metrics.f1_score(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
-            "accuracy_globally": metrics.accuracy(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
+            "balanced_accuracy_globally": metrics.balanced_accuracy(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
             "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
             "recall_globally": metrics.recall(tp, fp, fn, tn, reduction='weighted', class_weights=self.class_weights).item(),
             "f_precision_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted', class_weights=self.class_weights).item(),
@@ -115,7 +123,7 @@ class Metrics(nn.Module):
 
             "iou_score_imagewise": metrics.iou_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
             "f1_score_imagewise": metrics.f1_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
-            "accuracy_imagewise": metrics.accuracy(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            "balanced_accuracy_imagewise": metrics.balanced_accuracy(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
             "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
             "recall_imagewise": metrics.recall(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
             "f_precision_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
