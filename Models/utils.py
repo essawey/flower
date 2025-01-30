@@ -22,4 +22,4 @@ def plot_curve(metrics_list: Dict[str, List[float]], save_dir, client_id, curren
     plt.title("Training Metrics Over Epochs")
     plt.legend()
     plt.grid(True)
-    plt.savefig(f"plot_round_{}_client_{client_id}.png")
+    plt.savefig(f"plot_round_{current_round}_client_{client_id}.png")
