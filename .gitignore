@@ -1,4 +1,5 @@
 outputs/*
 saved_models/*
 PanNuke/data/*
+*/__pycache__/*
 wandb/*

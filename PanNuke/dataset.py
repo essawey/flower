@@ -1,5 +1,4 @@
 # pannuke/dataset.py
-
 import os
 import cv2
 import numpy as np
@@ -51,7 +50,6 @@ class SemanticSegmentationDataset(Dataset):
 
         return image, mask
 
-
 def getMeansAndStds():
 
     train_path = os.path.join(os.getcwd(), 'PanNuke', 'data', 'Patched', 'Train')
@@ -100,5 +98,3 @@ def class_weights():
     class_weights = {cls: total_pixels / count for cls, count in class_pixel_counts.items()}
 
     return class_weights
-
-# weights = class_weights()

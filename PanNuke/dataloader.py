@@ -7,8 +7,7 @@ import glob
 import os
 
 def load_data(batch_size):
-
-
+    
     image_dir = os.path.join(os.getcwd(), 'PanNuke', 'data', 'Patched', '**', '*.png')
     mask_dir = os.path.join(os.getcwd(), 'PanNuke', 'data', 'Patched', '**', '*.npy')
 

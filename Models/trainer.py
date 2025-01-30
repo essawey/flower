@@ -148,8 +148,8 @@ class Trainer:
         # Training complete
         time_elapsed = time.time() - start_time
         print(f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s")
-        save_model(self.model, self.save_dir, self.client_id)
-        plot_curve(metrics_list, self.save_dir, self.client_id)
+        save_model(self.model, self.save_dir, self.client_id, current_round)
+        plot_curve(metrics_list, self.save_dir, self.client_id, current_round)
         wandb.finish()
         return dict(metrics_list)
 

@@ -95,8 +95,5 @@ def main(cfg: DictConfig):
             json.dump(data, json_file, indent=4, )
     save_as_json({"history": history})
 
-    import wandb
-    wandb.finish()
-
 if __name__ == "__main__":
     main()

@@ -72,10 +72,7 @@ class FlowerClient(fl.client.NumPyClient):
 
     def evaluate(self, parameters, config):
 
-
         current_round = config.get("current_round", 0)
-
-
         self.set_parameters(parameters)
         results = self.trainer.val_model()
         return results['loss'], len(self.val_dataloader), results
@@ -95,7 +92,6 @@ def generate_client_fn(dataloaders: dict,
         
         train_dataloader = dataloaders['Train']
         val_dataloader = dataloaders['Validation']
-
 
         return FlowerClient(
             train_dataloader = train_dataloader[int(cid)],
