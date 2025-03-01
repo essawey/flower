@@ -1,6 +1,6 @@
 import subprocess
-subprocess.run("conda create --name flower python=3.9.0 -y", shell=True)
-subprocess.run("conda activate flower", shell=True)
+# subprocess.run("conda create --name flower python=3.9.0 -y", shell=True)
+# subprocess.run("conda activate flower", shell=True)
 subprocess.run("conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.6 -c pytorch -c nvidia -y", shell=True) # COMMAND SOURCE: https://pytorch.org/get-started/previous-versions/#linux-and-windows-28
 subprocess.run("pip install flwr==1.4.0", shell=True)
 subprocess.run("pip install ray==1.11.1", shell=True)
@@ -13,3 +13,5 @@ subprocess.run("pip install albumentations==1.3.0", shell=True)
 subprocess.run("pip install gdown==5.2.0", shell=True)
 subprocess.run("pip install wandb==0.15.5", shell=True)
 subprocess.run("pip install pydantic==1.10.12", shell=True)
+subprocess.run("pip install omegaconf==2.3.0", shell=True)
+subprocess.run("pip install hydra-core==1.3.2", shell=True)

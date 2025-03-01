@@ -17,7 +17,7 @@ def download():
             zip_ref.extractall(target_path)
 
 
-        import transforms
+        from PanNuke import transforms
         transforms.create_patches(target_path, 192, "Patched")
 
 
