@@ -57,9 +57,10 @@ def get_on_fit_config(cfg: DictConfig):
     def fit_config_fn(server_round: int):
 
         if server_round > 2:
-            pass
+            # cfg.client_config.lr = cfg.client_config.lr * 0.8
             #FIXME: Implement a learning rate scheduler for server rounds
-
+            pass
+        
         cfg.update({"current_round": server_round})
         return cfg
 

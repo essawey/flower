@@ -5,8 +5,8 @@ client_config:
   gamma: 0.1
   save_dir: ./saved_models
 
-num_clients: 4
-num_rounds: 3
+num_clients: 2
+num_rounds: 5
 
 num_cpus: 8
 num_gpus: 1
@@ -16,7 +16,7 @@ num_clients_per_round_eval: ${num_clients}
 batch_size: 1
 
 # Losses configuration
-smooth: 1.0        # Smooth term to avoid division by zero for all the losses and metrics
+smooth: 1        # Smooth term to avoid division by zero for all the losses and metrics
 ignore_index: 5   # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
 log_loss: false    # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
 
