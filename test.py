@@ -19,15 +19,6 @@ PROJECT_NAME = "FLOWER-advanced-pytorch"
 from hydra.utils import instantiate
 
 
-from hydra import initialize, compose
-from hydra.utils import instantiate
-
-
-# Initialize Hydra
-initialize(config_path=".", job_name="test_app")  # Specify the config directory
-cfg = compose(config_name="config")  # Load the config.yaml file
-
-
 def set_weights(model, parameters):
     params_dict = zip(model.state_dict().keys(), parameters)
     state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})

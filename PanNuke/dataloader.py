@@ -13,7 +13,7 @@ def load_data(batch_size):
 
     image_file_list = glob.glob(image_dir, recursive=True)
     mask_file_list = glob.glob(mask_dir, recursive=True)
-
+    
     png = sorted(image_file_list)
     npy = sorted(mask_file_list)
     

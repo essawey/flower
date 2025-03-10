@@ -18,12 +18,10 @@ def download():
 
 
         from PanNuke import transforms
-        transforms.create_patches(target_path, 192, "Patched")
+        transforms.create_patches(target_path, "Patched")
 
 
-        import os
         import shutil
-
         # Define the current working directory
         current_dir = os.getcwd()
 
