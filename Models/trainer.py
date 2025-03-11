@@ -73,7 +73,7 @@ class Trainer:
         """
 
         import wandb
-        current_round = config.get('current_round', -1)
+        current_round = config['current_round']
         client_id = self.client_id
         run_name = fr"round_{current_round}_client_{client_id}"
 
@@ -86,10 +86,7 @@ class Trainer:
 
 
 
-        # Initialize a dictionary to store metrics, using defaultdict for convenience
         metrics_list = defaultdict(list)
-
-        # Start tracking training time
         start_time = time.time()
 
         # Progress bar for visualizing epoch progress

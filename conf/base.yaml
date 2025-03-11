@@ -1,19 +1,19 @@
 client_config:
-  local_epochs: 6
+  local_epochs: 3
   lr: 0.01
   step_size: 7
   gamma: 0.1
   save_dir: ./saved_models
 
 num_clients: 2
-num_rounds: 5
+num_rounds: 2
 
 num_cpus: 8
 num_gpus: 1
 
 num_clients_per_round_fit: ${num_clients}
 num_clients_per_round_eval: ${num_clients}
-batch_size: 1
+batch_size: 2
 
 # Losses configuration
 smooth: 1        # Smooth term to avoid division by zero for all the losses and metrics

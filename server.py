@@ -76,48 +76,47 @@ def get_evaluate_fn(model, dataloader, criterion, metrics):
         params_dict = zip(model.state_dict().keys(), parameters)
         state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})
         '''
-        # model_state = model.state_dict()
-        # for k in model_state.keys():
-        #     if model_state[k].shape != state_dict[k].shape:
-        #         print(f"Shape mismatch : Loacl Model {model_state[k]}, Server Model {state_dict[k]}")
-        #         print(f"In layer {k}")
-        #         print()
+        model_state = model.state_dict()
+        for k in model_state.keys():
+            if model_state[k].shape != state_dict[k].shape:
+                print(f"Shape mismatch : Loacl Model {model_state[k]}, Server Model {state_dict[k]}")
+                print(f"In layer {k}")
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer inc.double_conv.1.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer inc.double_conv.1.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer inc.double_conv.4.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer inc.double_conv.4.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer down1.maxpool_conv.1.double_conv.1.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer down1.maxpool_conv.1.double_conv.1.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer down1.maxpool_conv.1.double_conv.4.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer down1.maxpool_conv.1.double_conv.4.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer down2.maxpool_conv.1.double_conv.1.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer down2.maxpool_conv.1.double_conv.1.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer down2.maxpool_conv.1.double_conv.4.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer down2.maxpool_conv.1.double_conv.4.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer down3.maxpool_conv.1.double_conv.1.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer down3.maxpool_conv.1.double_conv.1.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer down3.maxpool_conv.1.double_conv.4.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer down3.maxpool_conv.1.double_conv.4.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer down4.maxpool_conv.1.double_conv.1.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer down4.maxpool_conv.1.double_conv.1.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer down4.maxpool_conv.1.double_conv.4.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer down4.maxpool_conv.1.double_conv.4.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer up1.conv.double_conv.1.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer up1.conv.double_conv.1.num_batches_tracked
 
-                # Shape mismatch : Loacl Model 0, Server Model tensor([])
-                # In layer up1.conv.double_conv.4.num_batches_tracked
+                >>> Shape mismatch : Loacl Model 0, Server Model tensor([])
+                >>> In layer up1.conv.double_conv.4.num_batches_tracked
         '''
         for k, v in state_dict.items():
             # BatchNorm layers have a shape of torch.Size([0])
