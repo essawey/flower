@@ -30,8 +30,7 @@ def get_data_augmentation(means, stds):
     return data_augmentation
 
 
-from hydra import initialize, compose
-initialize(config_path="./conf")
+from hydra import compose
 cfg = compose(config_name="base")
 
 def create_patches(image_dir, target_dir, patch_size = cfg.patch_size):
