@@ -95,7 +95,7 @@ class Trainer:
         for _ in progressbar:
             self.epoch += 1  # Increment epoch counter
             self.model.train()  # Set the model to training mode
-            wandb.watch(self.model, log="all", log_freq=10)
+            # wandb.watch(self.model, log="all", log_freq=10)
             epoch_metrics = defaultdict(float)  # Metrics accumulator for the current epoch
             num_batches = 0  # To calculate batch-wise average metrics
 
