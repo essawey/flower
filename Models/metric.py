@@ -54,7 +54,7 @@ class MeanDice(nn.Module):
 from segmentation_models_pytorch import metrics 
 
 class Metrics(nn.Module):
-    # https://chatgpt.com/share/6783ade3-3008-8010-b47e-0a9c98293063
+
     # reduction = weighted 
     # 1. Looks at the entire dataset as a whole.
     # 2. Assigns a weight to each class based on how many times it appears across all images.
@@ -121,13 +121,13 @@ class Metrics(nn.Module):
             "f_precision_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted', class_weights=self.class_weights).item(),
             "f_recall_globally": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted', class_weights=self.class_weights).item(),
 
-            "iou_score_imagewise": metrics.iou_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
-            "f1_score_imagewise": metrics.f1_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
-            "balanced_accuracy_imagewise": metrics.balanced_accuracy(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
-            "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
-            "recall_imagewise": metrics.recall(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
-            "f_precision_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
-            "f_recall_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            # "iou_score_imagewise": metrics.iou_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            # "f1_score_imagewise": metrics.f1_score(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            # "balanced_accuracy_imagewise": metrics.balanced_accuracy(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            # "precision_globally": metrics.precision(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            # "recall_imagewise": metrics.recall(tp, fp, fn, tn, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            # "f_precision_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=0.5, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
+            # "f_recall_imagewise": metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction='weighted-imagewise', class_weights=self.class_weights).item(),
         }
         imported_metrics.update(build_in_metrics)
 

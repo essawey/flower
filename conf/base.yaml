@@ -1,12 +1,12 @@
 client_config:
-  local_epochs: 3
+  local_epochs: 30
   lr: 0.01
   step_size: 7
   gamma: 0.1
   save_dir: ./saved_models
 
-num_clients: 2
-num_rounds: 2
+num_clients: 4
+num_rounds: 3
 
 num_cpus: 8
 num_gpus: 1
@@ -17,8 +17,8 @@ batch_size: 2
 
 # Losses configuration
 smooth: 1        # Smooth term to avoid division by zero for all the losses and metrics
-ignore_index: 5   # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
-log_loss: false    # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
+ignore_index: 5  # FIXME: ADD the backgourd "6/-1" Use None if no pixels should be ignored
+log_loss: false  # Set True if you want to compute -log(dice_coeff) instead of 1 - dice_coeff
 
 # LovaszLoss
 per_image: true    # If True loss computed per each image and then averaged, else computed per whole batch

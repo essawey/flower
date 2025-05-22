@@ -30,7 +30,7 @@ def get_fit_metrics_aggregation_fn():
 
                 ## Training metrics are lists of floats
                 if type(metric_values) == list:
-                    last_value = metric_values[-1]
+                    last_value = max(metric_values)
 
                 ## Validation metrics are floats
                 else:

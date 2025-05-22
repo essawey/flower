@@ -9,8 +9,7 @@ class CategoricalCrossEntropyLoss(nn.Module):
         super().__init__()
 
     def forward(self, outputs, targets):
-        return F.nll_loss(outputs.log(), targets.argmax(dim=1))
-    
+        return F.cross_entropy(outputs, targets.argmax(dim=1))
 
 
 class CombinedLoss(nn.Module):
@@ -38,7 +37,7 @@ class CombinedLoss(nn.Module):
     
     def forward(self, outputs, targets):
         return (
-            # self.cross_entropy_loss(outputs, targets) +
+            self.cross_entropy_loss(outputs, targets) +
             self.DiceLoss(outputs, targets) + 
             self.FocalLoss(outputs, targets) +  # FIXME: You can cilp the value of the normalized focal loss [-1,1] to match the DiceLoss and LovaszLoss [0,1]
             self.LovaszLoss(outputs, targets)
