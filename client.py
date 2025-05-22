@@ -46,19 +46,11 @@ class FlowerClient(fl.client.NumPyClient):
             device=self.device,
             client_id = self.client_id
         )
+        
     def set_parameters(self, parameters):
-
         params_dict = zip(self.model.state_dict().keys(), parameters)
-
-        state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})
-
-        # BatchNorm layers have a shape of torch.Size([0])
-        # We need to convert them to torch.Size([1]) to load the model
-        for k, v in state_dict.items():
-            if 'num_batches_tracked' in k and v.shape == torch.Size([0]):
-                state_dict[k] = torch.tensor(0)
-
-        self.model.load_state_dict(state_dict)
+        state_dict = {k: torch.tensor(v) for k, v in params_dict}
+        self.model.load_state_dict(state_dict, strict=True)
 
     def get_parameters(self, config):
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]

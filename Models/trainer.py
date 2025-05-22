@@ -137,9 +137,10 @@ class Trainer:
                 metrics_list[key].append(value)
 
             progressbar.set_description(
-                f'''
-                Client {self.client_id} | Epoch {self.epoch} | Loss: {epoch_metrics['loss']:.3f} | IoU: {epoch_metrics.get('iou_score_globally'):.3f}
-                '''
+                f"Client {self.client_id} |",
+                f"Epoch {self.epoch} |",
+                f"Loss: {epoch_metrics['loss']:.3f} |",
+                f"IoU: {epoch_metrics.get('iou_score_globally'):.3f}",
             )
 
         # Training complete

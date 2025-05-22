@@ -32,7 +32,7 @@ reduced_threshold: null
 
 defaults:
   - _self_
-  - model: Segformer
+  - model: unet
   - strategy: FedAvg
   - criterion: CombinedLoss
   - DiceLoss: DiceLoss

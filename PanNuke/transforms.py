@@ -30,10 +30,8 @@ def get_data_augmentation(means, stds):
     return data_augmentation
 
 
-from hydra import compose
-cfg = compose(config_name="base")
 
-def create_patches(image_dir, target_dir, patch_size = cfg.patch_size):
+def create_patches(image_dir, target_dir, patch_size = 192):
     for path, _, _ in sorted(os.walk(image_dir)):
         relative_path = os.path.relpath(path, image_dir)
         target_path = Path(target_dir) / relative_path
