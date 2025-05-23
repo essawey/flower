@@ -1,5 +1,3 @@
-# """pytorch-example: A Flower / PyTorch app."""
-
 # import json
 # from logging import INFO
 
@@ -18,24 +16,6 @@
 
 # from hydra.utils import instantiate
 
-
-# def set_weights(model, parameters):
-#     params_dict = zip(model.state_dict().keys(), parameters)
-#     state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})
-#     for k, v in state_dict.items():
-#         # BatchNorm layers have a shape of torch.Size([0])
-#         # We need to convert them to torch.Size([1]) to load the model state dict
-#         if 'num_batches_tracked' in k and v.shape == torch.Size([0]):
-#             state_dict[k] = torch.tensor(0)
-
-#     model.load_state_dict(state_dict, strict=True)
-#     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-#     model.to(device)
-
-#     model.eval() 
-    
-#     return model
 
 
 # class CustomFedAvg(FedAvg):
