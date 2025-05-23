@@ -136,12 +136,12 @@ class Trainer:
                 wandb.log({key: value})
                 metrics_list[key].append(value)
 
-            progressbar.set_description(
-                f"Client {self.client_id} |",
-                f"Epoch {self.epoch} |",
-                f"Loss: {epoch_metrics['loss']:.3f} |",
-                f"IoU: {epoch_metrics.get('iou_score_globally'):.3f}",
-            )
+            # progressbar.set_description(
+            #     f"Client {self.client_id} |",
+            #     f"Epoch {self.epoch} |",
+            #     f"Loss: {epoch_metrics['loss']:.3f} |",
+            #     f"IoU: {epoch_metrics.get('iou_score_globally'):.3f}",
+            # )
 
         # Training complete
         time_elapsed = time.time() - start_time
@@ -189,5 +189,5 @@ class Trainer:
         for key in metrics_list.keys():
             metrics_list[key] /= num_batches
 
-
+        print(dict(metrics_list))
         return dict(metrics_list)

@@ -67,6 +67,8 @@ class FlowerClient(fl.client.NumPyClient):
         current_round = config.get("current_round", 0)
         self.set_parameters(parameters)
         results = self.trainer.val_model()
+        from pprint import pprint
+        pprint(results)
         return results['loss'], len(self.val_dataloader), results
 
 

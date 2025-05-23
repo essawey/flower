@@ -28,17 +28,17 @@ def load_data(batch_size):
     })
 
     # Splitting the DataFrame into individual client datasets for train and validation
-    train_client_0_df = df[df['split'].str.contains("Train") & df['clientNo'].str.contains("0")].head(1)
-    train_client_1_df = df[df['split'].str.contains("Train") & df['clientNo'].str.contains("1")].head(1)
-    train_client_2_df = df[df['split'].str.contains("Train") & df['clientNo'].str.contains("2")].head(1)
-    train_client_3_df = df[df['split'].str.contains("Train") & df['clientNo'].str.contains("3")].head(1)
+    train_client_0_df = df[df['split'].str.contains("Train") & df['clientNo'].str.contains("0")].head(10)
+    train_client_1_df = df[df['split'].str.contains("Train") & df['clientNo'].str.contains("1")].head(10)
+    train_client_2_df = df[df['split'].str.contains("Train") & df['clientNo'].str.contains("2")].head(10)
+    train_client_3_df = df[df['split'].str.contains("Train") & df['clientNo'].str.contains("3")].head(10)
 
-    val_client_0_df = df[df['split'].str.contains("Validation") & df['clientNo'].str.contains("0")].head(1)
-    val_client_1_df = df[df['split'].str.contains("Validation") & df['clientNo'].str.contains("1")].head(1)
-    val_client_2_df = df[df['split'].str.contains("Validation") & df['clientNo'].str.contains("2")].head(1)
-    val_client_3_df = df[df['split'].str.contains("Validation") & df['clientNo'].str.contains("3")].head(1)
+    val_client_0_df = df[df['split'].str.contains("Validation") & df['clientNo'].str.contains("0")].head(10)
+    val_client_1_df = df[df['split'].str.contains("Validation") & df['clientNo'].str.contains("1")].head(10)
+    val_client_2_df = df[df['split'].str.contains("Validation") & df['clientNo'].str.contains("2")].head(10)
+    val_client_3_df = df[df['split'].str.contains("Validation") & df['clientNo'].str.contains("3")].head(10)
 
-    server_test_df = df[df['split'].str.contains("Test")].head(1)
+    server_test_df = df[df['split'].str.contains("Test")].head(10)
 
     # Data augmentation transforms
     means, stds = getMeansAndStds()

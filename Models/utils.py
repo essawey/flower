@@ -2,7 +2,7 @@ import torch
 from typing import Dict, List
 import matplotlib.pyplot as plt
 import os
-
+import json
 
 def save_model(model: torch.nn.Module, save_dir: str, client_id: str, current_round):
 
@@ -33,7 +33,7 @@ def plot_curve(metrics_list: Dict[str, List[float]], save_dir, client_id, curren
     plt.xlabel('Epochs')
     plt.ylabel('Value')
     plt.grid(True)
-    plt.legend(fontsize=8)
+    # plt.legend(fontsize=8)
 
     # Plot Losses
     plt.subplot(1, 2, 2)
@@ -44,7 +44,7 @@ def plot_curve(metrics_list: Dict[str, List[float]], save_dir, client_id, curren
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.grid(True)
-    plt.legend(fontsize=8)
+    # plt.legend(fontsize=8)
 
     plt.suptitle(f'Training Metrics - Round {current_round} - Client {client_id}', fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
